@@ -11,7 +11,9 @@ type Response = {
   error?: string
 }
 
-export async function createPage({ pageName }: { pageName: string }): Promise<Response> {
+export async function createPage(
+  data: Omit<Page, 'sizes' | 'createdAt' | 'updatedAt' | 'id' | 'owner'>,
+): Promise<Response> {
   const payload = await getPayload({ config })
 
   const user = await getUser()
@@ -20,10 +22,12 @@ export async function createPage({ pageName }: { pageName: string }): Promise<Re
     return { success: false, error: 'You must be logged in to create a page.' }
   }
 
+  const page: Omit<Page, 'sizes' | 'createdAt' | 'updatedAt' | 'id'> = { ...data, owner: user.id }
+
   try {
     await payload.create({
       collection: 'pages',
-      data: { pageName, owner: user.id },
+      data: page,
     })
 
     return { success: true }

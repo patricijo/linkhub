@@ -23,7 +23,7 @@ export const usePages = (): PagesContextType => {
 
 // Create the provider component
 export const PagesProvider = ({ children, pages }: { children: ReactNode; pages: Page[] }) => {
-  const [activePage, setActivePage] = useState<Page | null | undefined>()
+  const [activePage, setActivePage] = useState<Page | null | undefined>(pages[0])
 
   return (
     <PagesContext.Provider value={{ pages, activePage, setActivePage }}>
