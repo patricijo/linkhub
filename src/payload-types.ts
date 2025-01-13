@@ -13,6 +13,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    pages: Page;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -21,6 +22,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -95,6 +97,46 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  pageName: string;
+  owner: string | User;
+  name?: string | null;
+  description?: string | null;
+  socials?:
+    | {
+        typeOfSocial?:
+          | (
+              | 'twitter'
+              | 'facebook'
+              | 'instagram'
+              | 'linkedin'
+              | 'youtube'
+              | 'tiktok'
+              | 'pinterest'
+              | 'snapchat'
+              | 'twitch'
+              | 'discord'
+              | 'whatsapp'
+              | 'telegram'
+              | 'reddit'
+              | 'medium'
+              | 'github'
+            )
+          | null;
+        label?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  content?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -107,6 +149,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -182,6 +228,27 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  pageName?: T;
+  owner?: T;
+  name?: T;
+  description?: T;
+  socials?:
+    | T
+    | {
+        typeOfSocial?: T;
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
