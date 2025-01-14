@@ -50,15 +50,18 @@ export const PagesCollection: CollectionConfig = {
             'reddit',
             'medium',
             'github',
+            'website',
           ],
         },
         {
           name: 'label',
           type: 'text',
+          required: true,
         },
         {
           name: 'url',
           type: 'text',
+          required: true,
         },
       ],
     },

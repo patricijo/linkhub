@@ -3,52 +3,60 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { createPage } from './actions/pages'
+import { createPage, updatePage } from './actions/pages'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
+import { Page } from '@/payload-types'
 
 const schema = z.object({
   pageName: z
     .string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(30, 'Username cannot exceed 30 characters')
+    .min(3, 'Identifier must be at least 3 characters')
+    .max(30, 'Identifier cannot exceed 30 characters')
     .regex(
       /^[a-zA-Z0-9_-]+$/,
-      'Username can only contain letters, numbers, underscores, and hyphens',
+      'Identifier can only contain letters, numbers, underscores, and hyphens',
     ),
   name: z
     .string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(30, 'Username cannot exceed 30 characters')
-    .optional(),
+    .min(3, 'Name must be at least 3 characters')
+    .max(30, 'Name cannot exceed 30 characters')
+    .optional()
+    .or(z.literal('')),
   description: z
     .string()
     .min(3, 'Description must be at least 3 characters')
-    .max(255, 'Username cannot exceed 30 characters')
-    .optional(),
+    .max(255, 'description cannot exceed 255 characters')
+    .optional()
+    .or(z.literal('')),
 })
 
 type FormFields = z.infer<typeof schema>
 
-export function CreatePageForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function PageForm({
+  page,
+  className,
+  ...props
+}: React.ComponentProps<'div'> & { page?: Page }) {
   const router = useRouter()
 
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
+    mode: 'onChange',
   })
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      const result = await createPage(data)
+      const result = page ? await updatePage({ ...page, ...data }) : await createPage(data)
 
       if (result.success) {
-        router.push(`/@${data.pageName}`)
+        router.push(`/dashboard/@${data.pageName}`)
       } else {
         setError('pageName', { message: result.error })
       }
@@ -66,21 +74,33 @@ export function CreatePageForm({ className, ...props }: React.ComponentProps<'di
           required
           id="pageName"
           className="pl-8 w-full"
-          placeholder="unique name"
+          placeholder="uniqueIdentifier"
+          defaultValue={page?.pageName}
         />
       </div>
       {errors.pageName && (
         <div className="text-red-500 text-xs  ml-2">{errors.pageName.message}</div>
       )}
-      <Input {...register('name')} required id="name" className=" w-full" placeholder="name" />
+      <Input
+        {...register('name')}
+        id="name"
+        className=" w-full"
+        placeholder="name"
+        defaultValue={page?.name || ''}
+      />
+      {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
       <Textarea
         {...register('description')}
         id="description"
         placeholder="Tell us a little bit about yourself"
         className="resize-none"
+        defaultValue={page?.description || ''}
       />
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        Create Page
+      {errors.description && (
+        <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
+      )}
+      <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
+        {page ? 'Update Page' : 'Create Page'}
       </Button>
     </form>
   )

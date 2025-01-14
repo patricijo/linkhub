@@ -124,10 +124,11 @@ export interface Page {
               | 'reddit'
               | 'medium'
               | 'github'
+              | 'website'
             )
           | null;
-        label?: string | null;
-        url?: string | null;
+        label: string;
+        url: string;
         id?: string | null;
       }[]
     | null;

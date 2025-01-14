@@ -8,6 +8,7 @@ import { Page } from '@/payload-types'
 
 type Response = {
   success: boolean
+  page?: Page
   error?: string
 }
 
@@ -74,4 +75,32 @@ export async function getPage(pageName: string): Promise<Page | null> {
   })
 
   return result.docs[0] || null
+}
+
+export async function updatePage(
+  page: Partial<Omit<Page, 'id'>> & Pick<Page, 'id'>,
+): Promise<Response> {
+  const payload = await getPayload({ config })
+  const user = await getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to create a page.' }
+  }
+
+  try {
+    const result = await payload.update({
+      collection: 'pages', // required
+      id: page.id, // required
+      data: page,
+      depth: 2,
+      user: user.id,
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    return { success: true, page: result }
+  } catch (error) {
+    console.error('Creating Error', error)
+    return { success: false, error: 'Error creating page' }
+  }
 }

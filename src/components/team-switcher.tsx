@@ -39,7 +39,7 @@ export function TeamSwitcher() {
                 {/*              <activeTeam.logo className="size-4" /> */}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{activePage?.pageName}</span>
+                <span className="truncate font-semibold">@{activePage?.pageName}</span>
                 <span className="truncate text-xs">{activePage?.description}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -54,26 +54,32 @@ export function TeamSwitcher() {
             <DropdownMenuLabel className="text-xs text-muted-foreground">Pages</DropdownMenuLabel>
             {pages.map((page, index) => (
               <DropdownMenuItem
+                onClick={() => {
+                  setActivePage(page)
+                }}
+                className="gap-2 p-2 cursor-pointer"
+                asChild
                 key={page.pageName}
-                onClick={() => setActivePage(page)}
-                className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  {/* <team.logo className="size-4 shrink-0" /> */}
-                </div>
-                {page.pageName}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <Link href={'/dashboard/@' + page.pageName}>
+                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                    {/* <team.logo className="size-4 shrink-0" /> */}
+                  </div>
+                  @{page.pageName}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>{' '}
+                </Link>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <Link href={'/dashboard/pages/create'}>
-              <DropdownMenuItem className="gap-2 p-2">
+
+            <DropdownMenuItem className="gap-2 p-2 cursor-pointer" asChild>
+              <Link href={'/dashboard/pages/create'}>
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus className="size-4" />
                 </div>
                 <div className="font-medium text-muted-foreground">Create page</div>
-              </DropdownMenuItem>
-            </Link>
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
