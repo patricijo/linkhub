@@ -9,8 +9,8 @@ import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { Page } from '@/payload-types'
 import { Globe } from 'lucide-react'
-import { checkUrl } from './urlCheck'
 import { useEffect } from 'react'
+import { checkUrl } from './urlCheck'
 
 const schema = z.object({
   url: z.string().url('Invalid Url'),
@@ -58,16 +58,17 @@ export function LinkForm({
   }
 
   const url = watch('url')
-  useEffect(() => {
-    alert(JSON.stringify(checkUrl(url)))
-  }, [url])
+
+  const checkedUrl = checkUrl(url)
+
+  const Icon = checkedUrl?.icon
 
   return (
     <form className="p-6 md:p-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-            <Globe size={16} />
+            {checkedUrl?.icon && <checkedUrl.icon />}
           </span>
           <Input
             {...register('url')}

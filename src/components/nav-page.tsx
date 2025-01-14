@@ -6,6 +6,8 @@ import {
   Frame,
   Instagram,
   Layers,
+  Link,
+  Monitor,
   MoreHorizontal,
   Plus,
   type LucideIcon,
@@ -31,7 +33,7 @@ export function NavPage() {
   const pageMenu = [
     {
       name: 'View',
-      url: '/dashboard/pages/edit/@' + activePage?.pageName,
+      url: '/dashboard/page/edit/@' + activePage?.pageName,
       icon: Frame,
     },
     {
@@ -45,24 +47,43 @@ export function NavPage() {
     <>
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarMenu>
-          {pageMenu.map((item) => (
-            <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.name}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-        <SidebarMenu>
           <Collapsible asChild defaultOpen={true} className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={'socials'}>
-                  {<Instagram />}
-                  <span>Socials</span>
+                <SidebarMenuButton tooltip={'Header Links'}>
+                  {<Monitor />}
+                  <span>Page</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <a href={'/dashboard/page/@' + activePage?.pageName}>
+                        <span>View</span>
+                      </a>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <a href={'/dashboard/page/@' + activePage?.pageName + '/edit'}>
+                        <span>Edit</span>
+                      </a>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible asChild defaultOpen={false} className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip={'Header Links'}>
+                  {<Link />}
+                  <span>Header Links</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
