@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Label } from '../ui/label'
 
 const schema = z.object({
   url: z.string(),
@@ -31,7 +32,7 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>
 
-export function LinkForm({
+export function HeaderLinkForm({
   page,
   index,
   className,
@@ -45,7 +46,7 @@ export function LinkForm({
     setError,
     watch,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -99,31 +100,36 @@ export function LinkForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-            {checkedUrl?.icon && <checkedUrl.icon size={18} />}
-          </span>
-          <Input
-            {...register('url')}
-            required
-            id="url"
-            className="pl-8 w-full"
-            placeholder="https://www.google.de"
-            defaultValue={(index !== undefined && page.socials?.[index]?.url) || undefined}
-          />
+        <div className="space-y-2">
+          <Label>Url</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+              {checkedUrl?.icon && <checkedUrl.icon size={18} />}
+            </span>
+            <Input
+              {...register('url')}
+              required
+              id="url"
+              className="pl-8 w-full"
+              placeholder="https://www.google.de"
+              defaultValue={(index !== undefined && page.socials?.[index]?.url) || undefined}
+            />
+          </div>
         </div>
       </div>
       {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
-      <Input
-        {...register('label')}
-        id="label"
-        className="w-full"
-        placeholder="label"
-        defaultValue={(index !== undefined && page.socials?.[index]?.label) || undefined}
-      />
+      <div className="space-y-2">
+        <Label>Label</Label>
+        <Input
+          {...register('label')}
+          id="label"
+          className="w-full"
+          placeholder="label"
+          defaultValue={(index !== undefined && page.socials?.[index]?.label) || undefined}
+        />
 
-      {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
-
+        {errors.label && <div className="text-red-500 text-xs  ml-2">{errors.label.message}</div>}
+      </div>
       <div className="flex space-x-4">
         {index !== undefined && (
           <>
@@ -160,7 +166,7 @@ export function LinkForm({
         <Button
           type="submit"
           className="w-full"
-          disabled={isSubmitting || checkedUrl.error != null}
+          disabled={isSubmitting || checkedUrl.error != null || !isValid}
         >
           {index !== undefined ? 'Save' : 'Add link'}
         </Button>

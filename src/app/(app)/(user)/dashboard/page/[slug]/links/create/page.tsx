@@ -1,6 +1,6 @@
 import { getUser } from '@/components/Auth/actions/auth'
 import { getPage } from '@/components/Pages/actions/pages'
-import { LinkForm } from '@/components/Pages/LinksForm'
+import { HeaderLinkForm } from '@/components/Pages/HeaderLinksForm'
 
 type Props = {
   params: Promise<{
@@ -26,7 +26,7 @@ export default async function Page({ params }: Props) {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-3xl">
-        <LinkForm page={page} />
+        <HeaderLinkForm page={page} />
       </div>
     </div>
   )

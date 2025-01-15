@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { LinkForm } from './LinksForm'
+import { HeaderLinkForm } from './HeaderLinksForm'
 import { checkUrl, createUrl } from './urlCheck'
 
 const HeaderLinks = ({ page }: { page: Page }) => {
@@ -52,7 +52,7 @@ const HeaderLinks = ({ page }: { page: Page }) => {
                                 This is a description inside the dialog.
                               </DialogDescription>
                             </DialogHeader>
-                            <LinkForm page={page} index={index} />
+                            <HeaderLinkForm page={page} index={index} />
                           </DialogContent>
                         </Dialog>
                       </>
@@ -86,7 +86,7 @@ const HeaderLinks = ({ page }: { page: Page }) => {
                     <DialogTitle>Add a new link</DialogTitle>
                     <DialogDescription>This is a description inside the dialog.</DialogDescription>
                   </DialogHeader>
-                  <LinkForm page={page} />
+                  <HeaderLinkForm page={page} />
                 </DialogContent>
               </Dialog>
             </TooltipTrigger>
