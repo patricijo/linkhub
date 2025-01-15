@@ -62,6 +62,13 @@ export const PagesCollection: CollectionConfig = {
           name: 'url',
           type: 'text',
           required: true,
+          hooks: {
+            beforeValidate: [
+              ({ value }) => {
+                return value.includes('://') ? value : `https://${value}`
+              },
+            ],
+          },
         },
       ],
     },

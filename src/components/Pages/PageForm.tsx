@@ -89,6 +89,7 @@ export function PageForm({
         defaultValue={page?.name || ''}
       />
       {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
+
       <Textarea
         {...register('description')}
         id="description"
