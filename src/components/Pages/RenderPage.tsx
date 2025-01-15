@@ -1,8 +1,9 @@
 import { Page } from '@/payload-types'
 import Image from 'next/image'
-import { usePages } from './Provider'
 
-export function RenderPage({
+import HeaderLinks from './HeaderLinks'
+
+export async function RenderPage({
   className,
   page,
   ...props
@@ -25,8 +26,10 @@ export function RenderPage({
             <h3 className="text-xl font-bold mb-2">@{page.pageName}</h3>
             <p className="text-xl opacity-80">{page.description && page.description}</p>
             <div className="w-full max-w-sm md:max-w-3xl space-y-4 "></div>
+            <div className="flex justify-center items-center space-x-4"></div>
           </div>
         </div>
+        <HeaderLinks page={page} />
       </div>
     </>
   )

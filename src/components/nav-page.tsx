@@ -30,19 +30,6 @@ import { nullable } from 'zod'
 export function NavPage() {
   const { activePage } = usePages()
 
-  const pageMenu = [
-    {
-      name: 'View',
-      url: '/dashboard/page/edit/@' + activePage?.pageName,
-      icon: Frame,
-    },
-    {
-      name: 'Edit',
-      url: '/dashboard/pages/edit/@' + activePage?.pageName,
-      icon: Edit,
-    },
-  ]
-
   return (
     <>
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -90,18 +77,20 @@ export function NavPage() {
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {activePage?.socials?.map((item) => (
-                    <SidebarMenuSubItem key={item.id}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={item.url}>
-                          <span>{item.label}</span>
-                          <span>{item.typeOfSocial}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                    <div key={item.id + 'nav'}>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          <a href={item.url}>
+                            <span>{item.label}</span>
+                            <span>{item.typeOfSocial}</span>
+                          </a>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </div>
                   ))}
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <a href={'/add/link'}>
+                      <a href={'/dashboard/@' + activePage?.pageName + '/links/create'}>
                         <Plus />
                         <span>Add a link</span>
                       </a>

@@ -66,7 +66,7 @@ export function PageForm({
   }
 
   return (
-    <form className="p-6 md:p-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="pace-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
         <Input
