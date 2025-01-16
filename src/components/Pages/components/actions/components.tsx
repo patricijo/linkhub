@@ -104,9 +104,11 @@ export async function updateComponent({
 export async function deleteComponent({
   component,
   componentSlug,
+  page,
 }: {
   component: Partial<Omit<PageLink, 'id'>> & Pick<PageLink, 'id'>
   componentSlug: CollectionSlug
+  page: Page
 }): Promise<Response> {
   const payload = await getPayload({ config })
   const user = await getUser()
@@ -116,7 +118,7 @@ export async function deleteComponent({
   }
 
   try {
-    const result = await payload.delete({
+    await payload.delete({
       collection: componentSlug, // required
       id: component.id, // required
       depth: 2,
@@ -125,7 +127,20 @@ export async function deleteComponent({
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
 
-    return { success: true, component: result as Collection }
+    const updatedRelations = page.content?.filter((relatedId) => relatedId.value !== component)
+
+    await payload.update({
+      collection: 'pages', // required
+      id: page.id, // required
+      user: user.id,
+      data: {
+        content: updatedRelations,
+      },
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    return { success: true }
   } catch (error) {
     console.error('Creating Error', error)
     return { success: false, error: 'Error creating page' }

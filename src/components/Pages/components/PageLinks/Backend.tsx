@@ -76,7 +76,11 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
 
   const onDelete = async ({ component }: { component: PageLink }) => {
     try {
-      const result = await deleteComponent({ component: component, componentSlug: 'pageLinks' })
+      const result = await deleteComponent({
+        component: component,
+        componentSlug: 'pageLinks',
+        page: page,
+      })
 
       if (result.success) {
         router.push(`/dashboard/page/@${page.pageName}`)
