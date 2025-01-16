@@ -61,7 +61,7 @@ export function TeamSwitcher() {
                 asChild
                 key={page.pageName}
               >
-                <Link href={'/dashboard/@' + page.pageName}>
+                <Link href={'/dashboard/page/@' + page.pageName}>
                   <div className="flex size-6 items-center justify-center rounded-sm border">
                     {/* <team.logo className="size-4 shrink-0" /> */}
                   </div>

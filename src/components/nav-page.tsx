@@ -25,7 +25,6 @@ import {
 } from '@/components/ui/sidebar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible'
 import { usePages } from './Pages/Provider'
-import { nullable } from 'zod'
 
 export function NavPage() {
   const { activePage } = usePages()
@@ -47,7 +46,7 @@ export function NavPage() {
                 <SidebarMenuSub>
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <a href={'/dashboard/page/@' + activePage?.pageName}>
+                      <a href={'/@' + activePage?.pageName}>
                         <span>View</span>
                       </a>
                     </SidebarMenuSubButton>
@@ -90,10 +89,10 @@ export function NavPage() {
                   ))}
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <a href={'/dashboard/@' + activePage?.pageName + '/links/create'}>
+                      {/* <a href={'/dashboard/@' + activePage?.pageName + '/links/create'}>
                         <Plus />
                         <span>Add a link</span>
-                      </a>
+                      </a> */}
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 </SidebarMenuSub>
