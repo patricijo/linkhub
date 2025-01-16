@@ -8,7 +8,20 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Page, PageLink } from '@/payload-types'
-import { createComponent, updateComponent } from '../actions/components'
+import { createComponent, deleteComponent, updateComponent } from '../actions/components'
+import { Label } from '@/components/ui/label'
+import { checkUrl, createUrl } from '../../urlCheck'
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Trash } from 'lucide-react'
 
 const schema = z.object({
   url: z.string(),
@@ -35,6 +48,7 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting, isValid },
+    watch,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -60,42 +74,110 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
     }
   }
 
-  return (
-    <form className="pace-y-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
-        <Input
-          {...register('url')}
-          required
-          id="componentName"
-          className="pl-8 w-full"
-          placeholder="url"
-          defaultValue={component?.url}
-        />
-      </div>
-      {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
-      <Input
-        {...register('label')}
-        id="name"
-        className=" w-full"
-        placeholder="name"
-        defaultValue={component?.label || ''}
-      />
-      {errors.label && <div className="text-red-500 text-xs  ml-2">{errors.label.message}</div>}
+  const onDelete = async ({ component }: { component: PageLink }) => {
+    try {
+      const result = await deleteComponent({ component: component, componentSlug: 'pageLinks' })
 
-      <Textarea
-        {...register('description')}
-        id="description"
-        placeholder="Tell us a little bit about yourself"
-        className="resize-none"
-        defaultValue={component?.description || ''}
-      />
-      {errors.description && (
-        <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
-      )}
-      <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
-        {component ? 'Update Page' : 'Create Page'}
-      </Button>
+      if (result.success) {
+        router.push(`/dashboard/page/@${page.pageName}`)
+      } else {
+        setError('url', { message: result.error })
+      }
+    } catch (error) {
+      console.error('Login error', error)
+    }
+  }
+
+  const url = watch('url') || (component && component.url) || ''
+
+  const checkedUrl = checkUrl(createUrl(url))
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-2">
+        <Label>Url</Label>
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">
+            {checkedUrl?.icon && <checkedUrl.icon size={18} />}
+          </span>
+          <Input
+            {...register('url')}
+            required
+            id="url"
+            className="pl-8 w-full"
+            placeholder="https://www.google.de"
+            defaultValue={component?.url}
+          />
+        </div>
+        {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Label</Label>
+        <Input
+          {...register('label')}
+          id="label"
+          className=" w-full"
+          placeholder="label"
+          defaultValue={component?.label || ''}
+        />
+        {errors.label && <div className="text-red-500 text-xs  ml-2">{errors.label.message}</div>}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Description</Label>
+        <Textarea
+          {...register('description')}
+          id="description"
+          placeholder="Tell us a little bit about yourself"
+          className="resize-none"
+          defaultValue={component?.description || ''}
+        />
+        {errors.description && (
+          <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
+        )}
+      </div>
+      <div className="flex space-x-4">
+        {component && (
+          <>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button type="button" variant={'destructive'}>
+                  <Trash size={34} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Delete link</DialogTitle>
+                  <DialogDescription>Are you sure?</DialogDescription>
+                </DialogHeader>
+                <div className="flex space-x-4">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    variant={'destructive'}
+                    onClick={() => {
+                      onDelete({ component })
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting || !isValid || checkedUrl.error != null}
+        >
+          {component ? 'Save Link' : 'Create Link'}
+        </Button>
+      </div>
     </form>
   )
 }

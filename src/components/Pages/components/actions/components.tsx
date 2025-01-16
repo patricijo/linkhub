@@ -100,3 +100,34 @@ export async function updateComponent({
     return { success: false, error: 'Error creating page' }
   }
 }
+
+export async function deleteComponent({
+  component,
+  componentSlug,
+}: {
+  component: Partial<Omit<PageLink, 'id'>> & Pick<PageLink, 'id'>
+  componentSlug: CollectionSlug
+}): Promise<Response> {
+  const payload = await getPayload({ config })
+  const user = await getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to create a page.' }
+  }
+
+  try {
+    const result = await payload.delete({
+      collection: componentSlug, // required
+      id: component.id, // required
+      depth: 2,
+      user: user.id,
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    return { success: true, component: result as Collection }
+  } catch (error) {
+    console.error('Creating Error', error)
+    return { success: false, error: 'Error creating page' }
+  }
+}

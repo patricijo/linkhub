@@ -103,7 +103,7 @@ export function HeaderLinkForm({
         <div className="space-y-2">
           <Label>Url</Label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">
               {checkedUrl?.icon && <checkedUrl.icon size={18} />}
             </span>
             <Input
@@ -116,8 +116,9 @@ export function HeaderLinkForm({
             />
           </div>
         </div>
+        {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
       </div>
-      {errors.url && <div className="text-red-500 text-xs  ml-2">{errors.url.message}</div>}
+
       <div className="space-y-2">
         <Label>Label</Label>
         <Input
