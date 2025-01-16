@@ -29,7 +29,7 @@ async function PageLinksComponent({
   const Icon = checkUrl(pageLink.url).icon
   return (
     <Link href={pageLink.url} target="_blank">
-      <div className="group  shadow-sm rounded-xl w-full text-lg p-4 bg-white text-slate-600 hover:bg-slate-100 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md">
+      <div className="shadow-sm rounded-xl w-full text-lg p-4 bg-white text-slate-600 group-hover:bg-slate-100 transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-md">
         <div className="w-full flex items-center">
           <div>
             <Icon />

@@ -45,7 +45,10 @@ export async function RenderPage({
             </div>
             {page.content?.map((content, index) => {
               return (
-                <div key={index + 'content'} className="group justify-center relative w-full">
+                <div
+                  key={index + 'content'}
+                  className={`group justify-center relative w-full ${isOwner && 'hover:pb-12 transition-all'}`}
+                >
                   <RenderContent content={content} isOwner={true} />
                   {isOwner && (
                     <>
