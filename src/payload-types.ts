@@ -14,6 +14,7 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
+    pageLinks: PageLink;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -23,6 +24,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    pageLinks: PageLinksSelect<false> | PageLinksSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -132,7 +134,26 @@ export interface Page {
         id?: string | null;
       }[]
     | null;
-  content?: (string | null) | User;
+  content?:
+    | {
+        relationTo: 'pageLinks';
+        value: string | PageLink;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageLinks".
+ */
+export interface PageLink {
+  id: string;
+  url: string;
+  label?: string | null;
+  owner: string | User;
+  description?: string | null;
+  renderStyle?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -154,6 +175,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'pageLinks';
+        value: string | PageLink;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -248,6 +273,19 @@ export interface PagesSelect<T extends boolean = true> {
         id?: T;
       };
   content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageLinks_select".
+ */
+export interface PageLinksSelect<T extends boolean = true> {
+  url?: T;
+  label?: T;
+  owner?: T;
+  description?: T;
+  renderStyle?: T;
   updatedAt?: T;
   createdAt?: T;
 }

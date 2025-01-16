@@ -1,3 +1,4 @@
+import { PageLinks } from '@/components/Pages/components/PageLinks/Collection'
 import { CollectionConfig } from 'payload'
 
 export const PagesCollection: CollectionConfig = {
@@ -75,7 +76,12 @@ export const PagesCollection: CollectionConfig = {
     {
       name: 'content',
       type: 'relationship',
-      relationTo: 'users',
+      hasMany: true,
+      relationTo: ['pageLinks'],
     },
   ],
 }
+
+export const ComponentCollections = [PageLinks]
+
+export const PagesCollections = [PagesCollection, ...ComponentCollections]
