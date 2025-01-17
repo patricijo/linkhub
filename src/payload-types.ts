@@ -15,6 +15,7 @@ export interface Config {
     media: Media;
     pages: Page;
     pageLinks: PageLink;
+    pageYoutubeVideos: PageYoutubeVideo;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -25,6 +26,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     pageLinks: PageLinksSelect<false> | PageLinksSelect<true>;
+    pageYoutubeVideos: PageYoutubeVideosSelect<false> | PageYoutubeVideosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -125,10 +127,16 @@ export interface Page {
       }[]
     | null;
   content?:
-    | {
-        relationTo: 'pageLinks';
-        value: string | PageLink;
-      }[]
+    | (
+        | {
+            relationTo: 'pageLinks';
+            value: string | PageLink;
+          }
+        | {
+            relationTo: 'pageYoutubeVideos';
+            value: string | PageYoutubeVideo;
+          }
+      )[]
     | null;
   profilePicture?: (string | null) | Media;
   updatedAt: string;
@@ -145,6 +153,17 @@ export interface PageLink {
   owner: string | User;
   description?: string | null;
   renderStyle?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageYoutubeVideos".
+ */
+export interface PageYoutubeVideo {
+  id: string;
+  url: string;
+  owner: string | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -170,6 +189,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageLinks';
         value: string | PageLink;
+      } | null)
+    | ({
+        relationTo: 'pageYoutubeVideos';
+        value: string | PageYoutubeVideo;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -291,6 +314,16 @@ export interface PageLinksSelect<T extends boolean = true> {
   owner?: T;
   description?: T;
   renderStyle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageYoutubeVideos_select".
+ */
+export interface PageYoutubeVideosSelect<T extends boolean = true> {
+  url?: T;
+  owner?: T;
   updatedAt?: T;
   createdAt?: T;
 }

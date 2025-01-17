@@ -53,45 +53,9 @@ export function NavPage() {
                   </SidebarMenuSubItem>
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <a href={'/dashboard/page/@' + activePage?.pageName + '/edit'}>
+                      <a href={'/dashboard/page/@' + activePage?.pageName}>
                         <span>Edit</span>
                       </a>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        </SidebarMenu>
-        <SidebarMenu>
-          <Collapsible asChild defaultOpen={false} className="group/collapsible">
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={'Header Links'}>
-                  {<Link />}
-                  <span>Header Links</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {activePage?.socials?.map((item) => (
-                    <div key={item.id + 'nav'}>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
-                          <a href={item.url}>
-                            <span>{item.label}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </div>
-                  ))}
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton asChild>
-                      {/* <a href={'/dashboard/@' + activePage?.pageName + '/links/create'}>
-                        <Plus />
-                        <span>Add a link</span>
-                      </a> */}
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 </SidebarMenuSub>

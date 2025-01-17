@@ -5,6 +5,7 @@ import config from '@payload-config'
 
 import { getUser } from '@/components/Auth/actions/auth'
 import { Page } from '@/payload-types'
+import { revalidatePath } from 'next/cache'
 
 type Response = {
   success: boolean
@@ -98,6 +99,7 @@ export async function updatePage(
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
 
+    revalidatePath('/@' + page.pageName)
     return { success: true, page: result }
   } catch (error) {
     console.error('Creating Error', error)
@@ -142,6 +144,7 @@ export async function uploadPicture({ file, page }: { file: File; page: Page }):
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
 
+    revalidatePath('/@' + page.pageName)
     return { success: true }
   } catch (error) {
     console.error('Creating Error', error)

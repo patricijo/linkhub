@@ -57,7 +57,7 @@ export function PageForm({
       const result = page ? await updatePage({ ...page, ...data }) : await createPage(data)
 
       if (result.success) {
-        router.push(`/dashboard/@${data.pageName}`)
+        router.push(`/dashboard/page/@${data.pageName}`)
       } else {
         setError('pageName', { message: result.error })
       }

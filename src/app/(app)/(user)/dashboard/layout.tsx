@@ -14,6 +14,11 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { redirect } from 'next/navigation'
 
+export const metadata = {
+  title: 'Dashboard | LinkHub',
+  description: 'One Page. All Your Links.',
+}
+
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const user = await getUser()
 

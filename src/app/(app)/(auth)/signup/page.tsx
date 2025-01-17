@@ -1,5 +1,5 @@
-import { SignInForm } from '@/components/Auth/SignInForm'
+import { SignUpForm } from '@/components/Auth/SignUpForm'
 
 export default function Page() {
-  return <SignInForm />
+  return <SignUpForm />
 }

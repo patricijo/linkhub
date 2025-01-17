@@ -18,17 +18,17 @@ import {
 import AddContent from './AddContent'
 import { PageForm } from './PageForm'
 import { ImageForm } from './ImageForm'
-import { url } from 'inspector'
+import DynamicBackend from './DynamicBackend'
 
 export async function RenderPage({
   className,
   page,
+  isOwner,
   ...props
-}: React.ComponentProps<'div'> & { page: Page }) {
-  const isOwner = true
+}: React.ComponentProps<'div'> & { page: Page; isOwner: boolean }) {
   return (
     <>
-      <div className="mb-8 text-center flex flex-col items-center space-y-4  w-full relative">
+      <div className="mb-16 text-center flex flex-col items-center space-y-4  w-full relative">
         {isOwner && (
           <div className="absolute right-0 top-0">
             <Dialog>
@@ -102,7 +102,7 @@ export async function RenderPage({
         </div>
         <p className="text-xl opacity-80">{page.description && page.description}</p>{' '}
         <div className=" py-4">
-          <HeaderLinks page={page} />
+          <HeaderLinks page={page} isOwner={isOwner} />
         </div>
         {page.content?.map((content, index) => {
           return (
@@ -139,7 +139,7 @@ export async function RenderPage({
                           </DialogDescription>
                         </DialogHeader>
                         {typeof content.value != 'string' && (
-                          <Backend component={content.value} page={page} />
+                          <DynamicBackend component={content} page={page} />
                         )}
                       </DialogContent>
                     </Dialog>

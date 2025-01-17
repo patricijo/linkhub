@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { getUser } from '@/components/Auth/actions/auth'
 import { Page, PageLink } from '@/payload-types'
 import { number } from 'zod'
+import { revalidatePath } from 'next/cache'
 
 type Collection = NonNullable<Page['content']>[number]['value']
 
@@ -94,6 +95,7 @@ export async function updateComponent({
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
 
+    revalidatePath('/@' + page.pageName)
     return { success: true, component: result as Collection }
   } catch (error) {
     console.error('Creating Error', error)
@@ -140,6 +142,7 @@ export async function deleteComponent({
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
 
+    revalidatePath('/@' + page.pageName)
     return { success: true }
   } catch (error) {
     console.error('Creating Error', error)

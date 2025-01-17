@@ -1,8 +1,22 @@
 import { PageLinks } from '@/components/Pages/components/PageLinks/Collection'
+import { PageYoutubeVideos } from '@/components/Pages/components/PageYoutubeVideos/Collection'
+
 import { CollectionConfig } from 'payload'
+import { owner } from './fields/owner'
+import { authenticated } from '@/access/authenticated'
+import { ownerAccess } from '@/access/owner'
+import { admin } from '@/access/admin'
 
 export const PagesCollection: CollectionConfig = {
   slug: 'pages',
+  access: {
+    admin: admin,
+    create: authenticated,
+    update: ownerAccess,
+    delete: ownerAccess,
+    read: ownerAccess,
+  },
+
   admin: {
     useAsTitle: 'pageName',
   },
@@ -13,12 +27,7 @@ export const PagesCollection: CollectionConfig = {
       unique: true,
       required: true,
     },
-    {
-      name: 'owner',
-      type: 'relationship',
-      relationTo: 'users',
-      required: true,
-    },
+    owner,
     {
       name: 'name',
       type: 'text',
@@ -55,7 +64,7 @@ export const PagesCollection: CollectionConfig = {
       name: 'content',
       type: 'relationship',
       hasMany: true,
-      relationTo: ['pageLinks'],
+      relationTo: ['pageLinks', 'pageYoutubeVideos'],
     },
     {
       name: 'profilePicture',
@@ -65,6 +74,6 @@ export const PagesCollection: CollectionConfig = {
   ],
 }
 
-export const ComponentCollections = [PageLinks]
+export const ComponentCollections = [PageLinks, PageYoutubeVideos]
 
 export const PagesCollections = [PagesCollection, ...ComponentCollections]

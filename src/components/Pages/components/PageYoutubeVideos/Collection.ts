@@ -1,11 +1,12 @@
 import { admin } from '@/access/admin'
 import { authenticated } from '@/access/authenticated'
 import { ownerAccess } from '@/access/owner'
+
 import { owner } from '@/collections/fields/owner'
 import type { CollectionConfig } from 'payload'
 
-export const PageLinks: CollectionConfig = {
-  slug: 'pageLinks',
+export const PageYoutubeVideos: CollectionConfig = {
+  slug: 'pageYoutubeVideos',
   access: {
     admin: admin,
     create: authenticated,
@@ -14,11 +15,11 @@ export const PageLinks: CollectionConfig = {
     read: ownerAccess,
   },
   labels: {
-    singular: 'Link',
-    plural: 'Links',
+    singular: 'Youtube Video',
+    plural: 'Youtube Videos',
   },
   custom: {
-    description: 'Add your link to your page.',
+    description: 'Add a Youtube video to your page.',
   },
   admin: {},
   fields: [
@@ -34,13 +35,6 @@ export const PageLinks: CollectionConfig = {
         ],
       },
     },
-    {
-      name: 'label',
-      type: 'text',
-    },
-
     owner,
-    { name: 'description', type: 'text' },
-    { name: 'renderStyle', type: 'text' },
   ],
 }
