@@ -8,7 +8,7 @@ import Image from 'next/image'
 export default async function Page() {
   const user = await getUser()
 
-  const page = await getPage('asdasvvvv')
+  const page = await getPage('sebastian')
 
   return (
     <>

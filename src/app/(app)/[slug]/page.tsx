@@ -70,13 +70,15 @@ export default async function Page({ params }: Props) {
       </div>
       <div className="relative">
         {isOwner && (
-          <div className="absolute top-0 right-0">
-            <Link href={'/dashboard/page/@' + page.pageName} className=" cursor-pointer">
-              <Button>
-                <Edit />
-                Edit
-              </Button>
-            </Link>
+          <div className="absolute top-0 right-0 z-50">
+            <div>
+              <Link href={'/dashboard/page/@' + page.pageName} className=" cursor-pointer">
+                <Button>
+                  <Edit />
+                  Edit
+                </Button>
+              </Link>
+            </div>
           </div>
         )}
         <RenderPage page={page} isOwner={false} />
