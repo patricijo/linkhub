@@ -81,7 +81,6 @@ export function NavPage() {
                         <SidebarMenuSubButton asChild>
                           <a href={item.url}>
                             <span>{item.label}</span>
-                            <span>{item.typeOfSocial}</span>
                           </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

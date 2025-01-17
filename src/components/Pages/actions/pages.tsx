@@ -104,3 +104,47 @@ export async function updatePage(
     return { success: false, error: 'Error creating page' }
   }
 }
+
+export async function uploadPicture({ file, page }: { file: File; page: Page }): Promise<Response> {
+  const payload = await getPayload({ config })
+  const user = await getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to create a page.' }
+  }
+
+  const data = await file.arrayBuffer()
+
+  try {
+    const media = await payload.create({
+      collection: 'media', // required
+      data: { alt: 'Profile Picture' },
+
+      user: user.id,
+
+      // Alternatively, you can directly pass a File,
+      // if file is provided, filePath will be omitted
+      file: {
+        data: Buffer.from(data),
+        mimetype: file.type,
+        name: file.name,
+        size: file.size,
+      },
+    })
+
+    await payload.update({
+      collection: 'pages', // required
+      id: page.id, // required
+      data: { profilePicture: media },
+      depth: 2,
+      user: user.id,
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('Creating Error', error)
+    return { success: false, error: 'Error creating page' }
+  }
+}

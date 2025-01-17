@@ -96,6 +96,16 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -109,26 +119,6 @@ export interface Page {
   description?: string | null;
   socials?:
     | {
-        typeOfSocial?:
-          | (
-              | 'twitter'
-              | 'facebook'
-              | 'instagram'
-              | 'linkedin'
-              | 'youtube'
-              | 'tiktok'
-              | 'pinterest'
-              | 'snapchat'
-              | 'twitch'
-              | 'discord'
-              | 'whatsapp'
-              | 'telegram'
-              | 'reddit'
-              | 'medium'
-              | 'github'
-              | 'website'
-            )
-          | null;
         label: string;
         url: string;
         id?: string | null;
@@ -140,6 +130,7 @@ export interface Page {
         value: string | PageLink;
       }[]
     | null;
+  profilePicture?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -254,6 +245,20 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -267,12 +272,12 @@ export interface PagesSelect<T extends boolean = true> {
   socials?:
     | T
     | {
-        typeOfSocial?: T;
         label?: T;
         url?: T;
         id?: T;
       };
   content?: T;
+  profilePicture?: T;
   updatedAt?: T;
   createdAt?: T;
 }

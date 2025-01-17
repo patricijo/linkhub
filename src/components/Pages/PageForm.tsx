@@ -8,6 +8,7 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { Page } from '@/payload-types'
+import { Label } from '../ui/label'
 
 const schema = z.object({
   pageName: z
@@ -66,40 +67,48 @@ export function PageForm({
   }
 
   return (
-    <form className="pace-y-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
-        <Input
-          {...register('pageName')}
-          required
-          id="pageName"
-          className="pl-8 w-full"
-          placeholder="uniqueIdentifier"
-          defaultValue={page?.pageName}
-        />
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-2">
+        <Label>Unique Identifier</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
+          <Input
+            {...register('pageName')}
+            required
+            id="pageName"
+            className="pl-8 w-full"
+            placeholder="uniqueIdentifier"
+            defaultValue={page?.pageName}
+          />
+        </div>
+        {errors.pageName && (
+          <div className="text-red-500 text-xs  ml-2">{errors.pageName.message}</div>
+        )}
       </div>
-      {errors.pageName && (
-        <div className="text-red-500 text-xs  ml-2">{errors.pageName.message}</div>
-      )}
-      <Input
-        {...register('name')}
-        id="name"
-        className=" w-full"
-        placeholder="name"
-        defaultValue={page?.name || ''}
-      />
-      {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
-
-      <Textarea
-        {...register('description')}
-        id="description"
-        placeholder="Tell us a little bit about yourself"
-        className="resize-none"
-        defaultValue={page?.description || ''}
-      />
-      {errors.description && (
-        <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
-      )}
+      <div className="space-y-2">
+        <Label>Name</Label>
+        <Input
+          {...register('name')}
+          id="name"
+          className=" w-full"
+          placeholder="name"
+          defaultValue={page?.name || ''}
+        />
+        {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
+      </div>
+      <div className="space-y-2">
+        <Label>Bio</Label>
+        <Textarea
+          {...register('description')}
+          id="description"
+          placeholder="Tell us a little bit about yourself"
+          className="resize-none"
+          defaultValue={page?.description || ''}
+        />
+        {errors.description && (
+          <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
+        )}
+      </div>
       <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
         {page ? 'Update Page' : 'Create Page'}
       </Button>

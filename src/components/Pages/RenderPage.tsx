@@ -4,7 +4,7 @@ import Image from 'next/image'
 import HeaderLinks from './HeaderLinks'
 import RenderContent from './RenderComponents'
 import { Button } from '../ui/button'
-import { ArrowBigDownDash, ArrowBigUpDash, Edit, Eye, Trash2 } from 'lucide-react'
+import { ArrowBigDownDash, ArrowBigUpDash, Edit, Eye, Trash2, Upload } from 'lucide-react'
 import Backend from './components/PageLinks/Backend'
 
 import {
@@ -16,6 +16,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import AddContent from './AddContent'
+import { PageForm } from './PageForm'
+import { ImageForm } from './ImageForm'
+import { url } from 'inspector'
 
 export async function RenderPage({
   className,
@@ -25,14 +28,74 @@ export async function RenderPage({
   const isOwner = true
   return (
     <>
-      <div className="mb-8 text-center flex flex-col items-center space-y-4  w-full">
-        <Image
-          src="/placeholder.svg?height=150&width=150"
-          alt="Profile Picture"
-          width={150}
-          height={150}
-          className="rounded-full border-4 border-white shadow-lg"
-        />
+      <div className="mb-8 text-center flex flex-col items-center space-y-4  w-full relative">
+        {isOwner && (
+          <div className="absolute right-0 top-0">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <Edit /> Edit
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit @{page.pageName}</DialogTitle>
+                </DialogHeader>
+                <PageForm page={page} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
+        {page.profilePicture &&
+        typeof page.profilePicture !== 'string' &&
+        typeof page.profilePicture &&
+        page.profilePicture.sizes?.thumbnail?.url ? (
+          <div className="relative">
+            <div className="rounded-full border-4 overflow-hidden border-white shadow-lg w-[150px] h-[150px] items-center content-center justify-center">
+              <Image
+                src={page.profilePicture.sizes?.thumbnail?.url}
+                alt="Profile Picture"
+                width={150}
+                height={150}
+              />
+            </div>
+            {isOwner && (
+              <Dialog>
+                <DialogTrigger>
+                  <div className="bg-gray-700 rounded-full p-2 text-white absolute top-2 right-2">
+                    <Upload size={12} />
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Upload Picture</DialogTitle>
+                  </DialogHeader>
+                  <ImageForm page={page} />
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-full border-4 border-white shadow-lg w-[150px] h-[150px] overflow-hidden items-center content-center justify-center">
+            {isOwner ? (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Upload /> Image
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Upload Picture</DialogTitle>
+                  </DialogHeader>
+                  <ImageForm page={page} />
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <div className=" size-40">{page.pageName[0].toUpperCase()}</div>
+            )}
+          </div>
+        )}
         <div>
           <h1 className="text-3xl font-bold ">{page.name ? page.name : page.pageName}</h1>
           <h3 className="text-xl font-bold ">@{page.pageName}</h3>

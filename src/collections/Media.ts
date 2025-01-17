@@ -12,5 +12,17 @@ export const Media: CollectionConfig = {
       required: true,
     },
   ],
-  upload: true,
+  upload: {
+    staticDir: 'media',
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    imageSizes: [
+      {
+        name: 'thumbnail',
+        fit: 'cover',
+        width: 400,
+        height: 400,
+        position: 'centre',
+      },
+    ],
+  },
 }

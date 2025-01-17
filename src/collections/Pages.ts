@@ -33,28 +33,6 @@ export const PagesCollection: CollectionConfig = {
 
       fields: [
         {
-          name: 'typeOfSocial',
-          type: 'select',
-          options: [
-            'twitter',
-            'facebook',
-            'instagram',
-            'linkedin',
-            'youtube',
-            'tiktok',
-            'pinterest',
-            'snapchat',
-            'twitch',
-            'discord',
-            'whatsapp',
-            'telegram',
-            'reddit',
-            'medium',
-            'github',
-            'website',
-          ],
-        },
-        {
           name: 'label',
           type: 'text',
           required: true,
@@ -78,6 +56,11 @@ export const PagesCollection: CollectionConfig = {
       type: 'relationship',
       hasMany: true,
       relationTo: ['pageLinks'],
+    },
+    {
+      name: 'profilePicture',
+      type: 'relationship',
+      relationTo: 'media',
     },
   ],
 }
