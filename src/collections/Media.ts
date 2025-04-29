@@ -5,7 +5,6 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
-
   fields: [
     {
       name: 'alt',
@@ -13,17 +12,5 @@ export const Media: CollectionConfig = {
       required: true,
     },
   ],
-  upload: {
-    staticDir: 'media',
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        fit: 'cover',
-        width: 400,
-        height: 400,
-        position: 'centre',
-      },
-    ],
-  },
+  upload: true,
 }
