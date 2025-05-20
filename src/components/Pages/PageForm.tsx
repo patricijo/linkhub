@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { createPage, updatePage } from './actions/pages'
+import { createPage, deletePage, updatePage } from './actions/pages'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
@@ -67,51 +67,66 @@ export function PageForm({
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-2">
-        <Label>Unique Identifier</Label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
-          <Input
-            {...register('pageName')}
-            required
-            id="pageName"
-            className="pl-8 w-full"
-            placeholder="uniqueIdentifier"
-            defaultValue={page?.pageName}
-          />
+    <>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-2">
+          <Label>Unique Identifier</Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
+            <Input
+              {...register('pageName')}
+              required
+              id="pageName"
+              className="pl-8 w-full"
+              placeholder="uniqueIdentifier"
+              defaultValue={page?.pageName}
+            />
+          </div>
+          {errors.pageName && (
+            <div className="text-red-500 text-xs  ml-2">{errors.pageName.message}</div>
+          )}
         </div>
-        {errors.pageName && (
-          <div className="text-red-500 text-xs  ml-2">{errors.pageName.message}</div>
-        )}
-      </div>
-      <div className="space-y-2">
-        <Label>Name</Label>
-        <Input
-          {...register('name')}
-          id="name"
-          className=" w-full"
-          placeholder="name"
-          defaultValue={page?.name || ''}
-        />
-        {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
-      </div>
-      <div className="space-y-2">
-        <Label>Bio</Label>
-        <Textarea
-          {...register('description')}
-          id="description"
-          placeholder="Tell us a little bit about yourself"
-          className="resize-none"
-          defaultValue={page?.description || ''}
-        />
-        {errors.description && (
-          <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
-        )}
-      </div>
-      <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
-        {page ? 'Update Page' : 'Create Page'}
-      </Button>
-    </form>
+        <div className="space-y-2">
+          <Label>Name</Label>
+          <Input
+            {...register('name')}
+            id="name"
+            className=" w-full"
+            placeholder="name"
+            defaultValue={page?.name || ''}
+          />
+          {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
+        </div>
+        <div className="space-y-2">
+          <Label>Bio</Label>
+          <Textarea
+            {...register('description')}
+            id="description"
+            placeholder="Tell us a little bit about yourself"
+            className="resize-none"
+            defaultValue={page?.description || ''}
+          />
+          {errors.description && (
+            <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
+          )}
+        </div>
+        <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
+          {page ? 'Update Page' : 'Create Page'}
+        </Button>
+      </form>
+      {page && (
+        <Button
+          onClick={async () => {
+            const result = await deletePage(page)
+            if (result.success) {
+              router.push('/dashboard')
+            }
+          }}
+          variant="destructive"
+        >
+          Delete page
+        </Button>
+      )}
+    </>
   )
 }

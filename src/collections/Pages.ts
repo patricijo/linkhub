@@ -71,6 +71,11 @@ export const PagesCollection: CollectionConfig = {
       type: 'relationship',
       relationTo: 'media',
     },
+    {
+      name: 'deleted',
+      type: 'checkbox',
+      defaultValue: false,
+    },
   ],
 }
 

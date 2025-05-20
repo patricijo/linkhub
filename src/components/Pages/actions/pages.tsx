@@ -55,6 +55,7 @@ export async function getPages(): Promise<Page[]> {
     pagination: false,
     where: {
       owner: { equals: user.id },
+      deleted: { equals: false },
     }, // pass a `where` query here
     sort: 'createdAt: -1', // pass a `sort` query here
     fallbackLocale: false,
@@ -71,7 +72,10 @@ export async function getPage(pageName: string): Promise<Page | null> {
     depth: 2,
     pagination: false,
     where: {
-      pageName: { equals: pageName },
+      pageName: {
+        like: pageName,
+      },
+      deleted: { equals: false },
     },
   })
 
@@ -93,6 +97,36 @@ export async function updatePage(
       collection: 'pages', // required
       id: page.id, // required
       data: page,
+      depth: 2,
+      user: user.id,
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    revalidatePath('/@' + page.pageName)
+    return { success: true, page: result }
+  } catch (error) {
+    console.error('Creating Error', error)
+    return { success: false, error: 'Error creating page' }
+  }
+}
+export async function deletePage(
+  page: Partial<Omit<Page, 'id'>> & Pick<Page, 'id'>,
+): Promise<Response> {
+  const payload = await getPayload({ config })
+  const user = await getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to create a page.' }
+  }
+
+  try {
+    const result = await payload.update({
+      collection: 'pages', // required
+      id: page.id, // required
+      data: {
+        deleted: true,
+      },
       depth: 2,
       user: user.id,
       overrideAccess: false,

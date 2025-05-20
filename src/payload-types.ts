@@ -195,6 +195,7 @@ export interface Page {
       )[]
     | null;
   profilePicture?: (string | null) | Media;
+  deleted?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -357,6 +358,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   content?: T;
   profilePicture?: T;
+  deleted?: T;
   updatedAt?: T;
   createdAt?: T;
 }
