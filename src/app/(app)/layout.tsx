@@ -11,7 +11,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className="bg-muted ">
+      <body className="bg-muted w-full h-screen relative">
         <UserProvider user={user}>{children}</UserProvider>
       </body>
     </html>

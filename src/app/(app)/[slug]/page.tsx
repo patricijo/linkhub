@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import LogoutButton from '@/components/Auth/LogoutButton'
 import Link from 'next/link'
+import { Navbar } from '@/components/navbar'
 type Props = {
   params: Promise<{
     slug: string
@@ -39,35 +40,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      <div className="absolute left-6 top-6 text-2xl text-gray-700 font-semibold">
-        <Link href={'/'}>LinkHub</Link>
-      </div>
-      <div className="absolute right-6 top-6">
-        {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger className=" content-center" asChild>
-              <Button className="w-56">
-                <span className="truncate text-xs">{user.email}</span>
-                <ArrowDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link href={'/dashboard'} className=" cursor-pointer">
-                <DropdownMenuItem>Dashboard</DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem>
-                <LogoutButton />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Link href={'/signin'}>
-            <Button>Log In</Button>{' '}
-          </Link>
-        )}
-      </div>
+      <Navbar />
       <div className="relative">
         {isOwner && (
           <div className="absolute top-0 right-0 z-50">

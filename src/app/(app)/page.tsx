@@ -2,8 +2,9 @@ import { getUser } from '@/components/Auth/actions/auth'
 import { getPage } from '@/components/Pages/actions/pages'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Card, CardHeader } from '@/components/ui/card'
 import Image from 'next/image'
+import { Navbar } from '@/components/navbar'
 
 export default async function Page() {
   const user = await getUser()
@@ -12,9 +13,9 @@ export default async function Page() {
 
   return (
     <>
+      <Navbar />
       <section className=" text-gray-700 bg-white">
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-bold mb-6">LinkHub</h1>
           <h1 className="text-5xl font-bold mb-6">One Page. All Your Links.</h1>
           <p className="text-xl max-w-2xl mx-auto mb-8 opacity-90">
             Create your personalized link landing page in seconds. Modern, customizable, and free to
@@ -32,10 +33,10 @@ export default async function Page() {
         </div>
       </section>
       <section className=" text-gray-700">
-        <div className="container mx-auto px-4 py-20 text-center justify-center">
+        <div className="container mx-auto px-4  pt-20 pb-10 text-center justify-center">
           <h1 className="text-5xl font-bold mb-8">Want an example?</h1>
         </div>
-        <div className=" items-center justify-items-center">
+        <div className=" items-center justify-items-center flex justify-center mx-auto pb-20 ">
           {page && (
             <Card>
               <Link key={page.id} href={'/@' + page.pageName}>
