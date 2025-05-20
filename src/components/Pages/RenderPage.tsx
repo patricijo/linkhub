@@ -76,8 +76,8 @@ export async function RenderPage({
             )}
           </div>
         ) : (
-          <div className="rounded-full border-4 border-white shadow-lg w-[150px] h-[150px] overflow-hidden items-center content-center justify-center">
-            {isOwner ? (
+          isOwner && (
+            <div className="rounded-full border-4 border-white shadow-lg w-[150px] h-[150px] overflow-hidden items-center content-center justify-center">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button>
@@ -91,10 +91,8 @@ export async function RenderPage({
                   <ImageForm page={page} />
                 </DialogContent>
               </Dialog>
-            ) : (
-              <div className=" size-40">{page.pageName[0].toUpperCase()}</div>
-            )}
-          </div>
+            </div>
+          )
         )}
         <div>
           <h1 className="text-3xl font-bold ">{page.name ? page.name : page.pageName}</h1>
