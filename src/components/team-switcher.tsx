@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/sidebar'
 import { usePages } from './Pages/Provider'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar()
@@ -35,8 +36,17 @@ export function TeamSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {/*              <activeTeam.logo className="size-4" /> */}
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden">
+                {typeof activePage?.profilePicture !== 'string' &&
+                  activePage?.profilePicture &&
+                  activePage?.profilePicture.sizes?.thumbnail?.url && (
+                    <Image
+                      src={activePage?.profilePicture.sizes?.thumbnail?.url}
+                      alt="Profile Picture"
+                      width={30}
+                      height={30}
+                    />
+                  )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">@{activePage?.pageName}</span>
@@ -63,7 +73,16 @@ export function TeamSwitcher() {
               >
                 <Link href={'/dashboard/page/@' + page.pageName}>
                   <div className="flex size-6 items-center justify-center rounded-sm border">
-                    {/* <team.logo className="size-4 shrink-0" /> */}
+                    {typeof page.profilePicture !== 'string' &&
+                      page.profilePicture &&
+                      page.profilePicture.sizes?.thumbnail?.url && (
+                        <Image
+                          src={page.profilePicture.sizes?.thumbnail?.url}
+                          alt="Profile Picture"
+                          width={20}
+                          height={20}
+                        />
+                      )}
                   </div>
                   @{page.pageName}
                   <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>{' '}
