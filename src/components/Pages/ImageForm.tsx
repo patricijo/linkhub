@@ -1,12 +1,12 @@
 'use client'
-import { zodResolver } from '@hookform/resolvers/zod'
+
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { createPage, uploadPicture } from './actions/pages'
+import { uploadPicture } from './actions/pages'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Textarea } from '../ui/textarea'
+
 import { Page } from '@/payload-types'
 import { Label } from '../ui/label'
 

@@ -56,7 +56,7 @@ const HeaderLinks = ({ page, isOwner }: { page: Page; isOwner: boolean }) => {
                   {link.label}
                 </div>
 
-                <div className="bg-gray-300 w-auto absolute py-0 px-0 overflow-hidden text-xs rounded-full z-40 left-1/2 transform -translate-x-1/2 h-0 text-grey-700  group-hover:h-auto  group-hover:px-2 group-hover:py-1  group-hover:mt-10  shadow-md transition-all duration-900 ease-in-out">
+                <div className="bg-gray-300 w-auto absolute py-0 px-0 overflow-hidden text-xs rounded-full z-40 left-1/2 transform -translate-x-1/2 h-0 text-grey-700  group-hover:h-auto  group-hover:px-2 group-hover:py-1  group-hover:mt-10  shadow-md transition-all duration-900 ease-in-out whitespace-nowrap">
                   {link.url}
                 </div>
               </div>
