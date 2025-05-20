@@ -9,7 +9,7 @@ import { Navbar } from '@/components/navbar'
 export default async function Page() {
   const user = await getUser()
 
-  const page = await getPage('sebastian')
+  const page = await getPage('patrici')
 
   return (
     <>
