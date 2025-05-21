@@ -19,6 +19,7 @@ import AddContent from './AddContent'
 import { PageForm } from './PageForm'
 import { ImageForm } from './ImageForm'
 import DynamicBackend from './DynamicBackend'
+import { SortableComponents } from './sortableComponents/sortableComponents'
 
 export async function RenderPage({
   className,
@@ -102,6 +103,7 @@ export async function RenderPage({
         <div className=" py-4">
           <HeaderLinks page={page} isOwner={isOwner} />
         </div>
+        {isOwner && <SortableComponents componentItems={page['content']} />}
         {page.content?.map((content, index) => {
           return (
             <div
@@ -136,9 +138,7 @@ export async function RenderPage({
                             This is a description inside the dialog.
                           </DialogDescription>
                         </DialogHeader>
-                        {typeof content.value != 'string' && (
-                          <DynamicBackend component={content} page={page} />
-                        )}
+                        {typeof content.value != 'string' && <DynamicBackend component={content} />}
                       </DialogContent>
                     </Dialog>
                   </div>

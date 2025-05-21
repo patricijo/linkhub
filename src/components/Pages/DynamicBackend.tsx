@@ -3,13 +3,7 @@
 import dynamic from 'next/dynamic'
 import { Page } from '@/payload-types'
 
-const DynamicBackend = ({
-  component,
-  page,
-}: {
-  component: NonNullable<Page['content']>[number]
-  page: Page
-}) => {
+const DynamicBackend = ({ component }: { component: NonNullable<Page['content']>[number] }) => {
   const DynamicComponent = dynamic(
     () =>
       import(
@@ -20,7 +14,7 @@ const DynamicBackend = ({
     },
   )
   //@ts-expect-error
-  return <DynamicComponent component={component.value} page={page} />
+  return <DynamicComponent component={component.value} />
 }
 
 export default DynamicBackend

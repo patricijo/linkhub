@@ -1,12 +1,9 @@
-'use server'
-
 import { PageLink } from '@/payload-types'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { checkUrl } from '../../urlCheck'
 
-async function PageLinksComponent({ pageLink }: { pageLink: PageLink | string; isOwner: boolean }) {
-  // sollte eigentlich nicht relevant
+function PageLinksComponent({ pageLink }: { pageLink: PageLink | string; isOwner: boolean }) {
   if (typeof pageLink === 'string') {
     return
   }

@@ -1,5 +1,3 @@
-'use server'
-
 import { PageYoutubeVideo } from '../../../../payload-types'
 
 function getYouTubeVideoId(url: string) {
@@ -9,7 +7,7 @@ function getYouTubeVideoId(url: string) {
   return match ? match[1] : null // Return the video ID or null if no match
 }
 
-async function PageYoutubesVideoComponent({
+function PageYoutubesVideoComponent({
   pageYoutubeVideo,
 }: {
   pageYoutubeVideo: PageYoutubeVideo | string
