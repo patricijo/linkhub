@@ -8,7 +8,7 @@ export function ActivePage({ page }: { page: Page }) {
 
   useEffect(() => {
     setActivePage(page)
-  }, [])
+  }, [page, setActivePage])
 
   return null
 }

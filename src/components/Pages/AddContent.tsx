@@ -20,7 +20,11 @@ import { Page } from '@/payload-types'
 const components = ComponentCollections
 
 function AddContent({ page }: { page: Page }) {
+  const [isOpen, setIsOpen] = useState(false)
   const [currentComponent, setCurrentComponent] = useState<string | null>(null)
+  const handleClose = () => {
+    setIsOpen(false)
+  }
 
   const BackendComponent = () => {
     if (currentComponent) {
@@ -34,20 +38,23 @@ function AddContent({ page }: { page: Page }) {
         },
       )
       //@ts-expect-error
-      return <DynamicComponent page={page} />
+      return <DynamicComponent page={page} onClose={handleClose} />
     }
     return null
   }
 
   return (
     <div className="mt-4 w-full">
-      <Dialog onOpenChange={() => setCurrentComponent(null)}>
-        <DialogTrigger asChild>
-          <Button className={'w-full'} size={'lg'}>
-            <Plus />
-          </Button>
-        </DialogTrigger>
-
+      <Button className={'w-full'} size={'lg'} onClick={() => setIsOpen(true)}>
+        <Plus />
+      </Button>
+      <Dialog
+        open={isOpen}
+        onOpenChange={() => {
+          setCurrentComponent(null)
+          setIsOpen(!isOpen)
+        }}
+      >
         <DialogContent className="sm:max-w-[425px] space-y-4">
           <DialogHeader>
             <DialogTitle>Add Content</DialogTitle>

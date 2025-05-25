@@ -60,7 +60,8 @@ export async function createComponent({
       overrideAccess: false,
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
-
+    revalidatePath('/dashboard/page/@' + page.pageName)
+    revalidatePath('/@' + page.pageName)
     return { success: true }
   } catch (error) {
     console.error('Creating Error', error)
@@ -96,6 +97,7 @@ export async function updateComponent({
     })
 
     revalidatePath('/@' + page.pageName)
+    revalidatePath('/dashboard/page/@' + page.pageName)
     return { success: true, component: result as Collection }
   } catch (error) {
     console.error('Creating Error', error)
@@ -143,6 +145,36 @@ export async function deleteComponent({
     })
 
     revalidatePath('/@' + page.pageName)
+    revalidatePath('/dashboard/page/y@' + page.pageName)
+    return { success: true }
+  } catch (error) {
+    console.error('Creating Error', error)
+    return { success: false, error: 'Error creating page' }
+  }
+}
+
+export async function saveSort(page: Page): Promise<Response> {
+  const payload = await getPayload({ config })
+  const user = await getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to create a page.' }
+  }
+
+  try {
+    await payload.update({
+      collection: 'pages', // required
+      id: page.id, // required
+      user: user.id,
+      data: {
+        content: page.content,
+      },
+      overrideAccess: false,
+      overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
+    })
+
+    revalidatePath('/@' + page.pageName)
+
     return { success: true }
   } catch (error) {
     console.error('Creating Error', error)

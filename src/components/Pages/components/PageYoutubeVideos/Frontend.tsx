@@ -18,7 +18,7 @@ function PageYoutubesVideoComponent({
   }
 
   return (
-    <div className="shadow-sm overflow-hidden aspect-video rounded-xl w-full text-lg p-4 bg-white text-slate-600  transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-md">
+    <div className="shadow-sm rounded-xl w-full text-lg p-4 bg-white text-slate-600 aspect-video relative overflow-hidden">
       <iframe
         src={'https://www.youtube.com/embed/' + getYouTubeVideoId(pageYoutubeVideo.url)}
         title="YouTube video player"

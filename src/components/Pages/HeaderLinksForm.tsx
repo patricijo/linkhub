@@ -66,7 +66,6 @@ export function HeaderLinkForm({
       console.log(result)
       if (result.success) {
         reset()
-        router.push(`/dashboard/page/@${page.pageName}`)
       } else {
         setError('url', { message: result.error })
       }
@@ -84,7 +83,6 @@ export function HeaderLinkForm({
       const result = await updatePage({ id: page.id, socials: socials })
 
       if (result.success) {
-        router.push(`/dashboard/page/@${page.pageName}`)
       } else {
         setError('url', { message: result.error })
       }
