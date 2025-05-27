@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { HeaderLinkForm } from './HeaderLinksForm'
+import { HeaderLinkForm } from './EditPage/HeaderLinksForm'
 import { checkUrl } from './urlCheck'
 
 const HeaderLinks = ({ page, isOwner }: { page: Page; isOwner: boolean }) => {
@@ -48,7 +48,6 @@ const HeaderLinks = ({ page, isOwner }: { page: Page; isOwner: boolean }) => {
                           This is a description inside the dialog.
                         </DialogDescription>
                       </DialogHeader>
-                      <HeaderLinkForm page={page} index={index} />
                     </DialogContent>
                   </Dialog>
                 )}
@@ -78,7 +77,6 @@ const HeaderLinks = ({ page, isOwner }: { page: Page; isOwner: boolean }) => {
                 <DialogTitle>Add a new link</DialogTitle>
                 <DialogDescription>This is a description inside the dialog.</DialogDescription>
               </DialogHeader>
-              <HeaderLinkForm page={page} />
             </DialogContent>
           </Dialog>
         )}

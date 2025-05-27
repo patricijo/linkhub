@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Trash } from 'lucide-react'
+import { useState } from 'react'
 
 const schema = z.object({
   url: z.string(),
@@ -40,7 +41,17 @@ const schema = z.object({
 })
 
 type FormFields = z.infer<typeof schema>
-function Backend({ component, page }: { component?: PageLink; page: Page }) {
+function Backend({
+  component,
+  page,
+  onClose,
+}: {
+  component?: PageLink
+  page: Page
+  onClose: () => void
+}) {
+  const [loadDelete, setLoadDelete] = useState(false)
+
   const router = useRouter()
 
   const {
@@ -65,7 +76,7 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
         : await createComponent({ data, componentSlug: 'pageLinks', page })
 
       if (result.success) {
-        router.push(`/dashboard/page/@${page.pageName}`)
+        onClose()
       } else {
         setError('url', { message: result.error })
       }
@@ -76,6 +87,7 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
 
   const onDelete = async ({ component }: { component: PageLink }) => {
     try {
+      setLoadDelete(true)
       const result = await deleteComponent({
         component: component,
         componentSlug: 'pageLinks',
@@ -83,12 +95,14 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
       })
 
       if (result.success) {
-        router.push(`/dashboard/page/@${page.pageName}`)
+        onClose()
       } else {
         setError('url', { message: result.error })
+        setLoadDelete(false)
       }
     } catch (error) {
       console.error('Login error', error)
+      setLoadDelete(false)
     }
   }
 
@@ -155,21 +169,25 @@ function Backend({ component, page }: { component?: PageLink; page: Page }) {
                   <DialogTitle>Delete link</DialogTitle>
                   <DialogDescription>Are you sure?</DialogDescription>
                 </DialogHeader>
-                <div className="flex space-x-4">
-                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">
-                      Cancel
+                {loadDelete ? (
+                  <>Loading...</>
+                ) : (
+                  <div className="flex space-x-4">
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      variant={'destructive'}
+                      onClick={() => {
+                        onDelete({ component })
+                      }}
+                    >
+                      Delete
                     </Button>
-                  </DialogClose>
-                  <Button
-                    variant={'destructive'}
-                    onClick={() => {
-                      onDelete({ component })
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
+                  </div>
+                )}
               </DialogContent>
             </Dialog>
           </>

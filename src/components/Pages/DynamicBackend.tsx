@@ -6,9 +6,11 @@ import { Page } from '@/payload-types'
 const DynamicBackend = ({
   component,
   page,
+  onClose,
 }: {
   component: NonNullable<Page['content']>[number]
   page: Page
+  onClose: () => void
 }) => {
   const DynamicComponent = dynamic(
     () =>
@@ -20,7 +22,7 @@ const DynamicBackend = ({
     },
   )
   //@ts-expect-error
-  return <DynamicComponent component={component.value} page={page} />
+  return <DynamicComponent component={component.value} page={page} onClose={onClose} />
 }
 
 export default DynamicBackend

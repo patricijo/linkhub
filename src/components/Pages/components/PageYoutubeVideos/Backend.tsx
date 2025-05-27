@@ -6,7 +6,6 @@ import { z } from 'zod'
 
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Page, PageLink } from '@/payload-types'
 import { createComponent, deleteComponent, updateComponent } from '../actions/components'
 import { Label } from '@/components/ui/label'
