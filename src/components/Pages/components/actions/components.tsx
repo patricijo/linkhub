@@ -168,11 +168,12 @@ export async function saveSort(page: Page): Promise<Response> {
       user: user.id,
       data: {
         content: page.content,
+        socials: page.socials,
       },
       overrideAccess: false,
       overrideLock: false, // By default, document locks are ignored. Set to false to enforce locks.
     })
-
+    revalidatePath('/dashboard/page/@' + page.pageName)
     revalidatePath('/@' + page.pageName)
 
     return { success: true }

@@ -1,6 +1,8 @@
 import { UserProvider } from '@/components/Auth/Provider'
 import './style.css'
 import { getUser } from '@/components/Auth/actions/auth'
+import { Toaster } from '@/components/ui/toaster'
+import { ToastProvider } from '@/components/ui/toast'
 
 export const metadata = {
   title: 'LinkHub',
@@ -12,7 +14,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className="bg-muted w-full h-screen relative">
-        <UserProvider user={user}>{children}</UserProvider>
+        <ToastProvider>
+          <UserProvider user={user}>{children}</UserProvider>
+        </ToastProvider>
+        <Toaster />
       </body>
     </html>
   )

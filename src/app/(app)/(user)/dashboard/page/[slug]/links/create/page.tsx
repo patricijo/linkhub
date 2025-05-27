@@ -1,6 +1,6 @@
 import { getUser } from '@/components/Auth/actions/auth'
 import { getPage } from '@/components/Pages/actions/pages'
-import { HeaderLinkForm } from '@/components/Pages/HeaderLinksForm'
+import { HeaderLinkForm } from '@/components/Pages/EditPage/HeaderLinksForm'
 
 type Props = {
   params: Promise<{

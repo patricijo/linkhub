@@ -15,10 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import AddContent from './AddContent'
+
 import { PageForm } from './PageForm'
 import { ImageForm } from './ImageForm'
-import { AdminComponents } from './AdminComponents'
+
+import { EditPage } from './EditPage/EditPage'
 
 export async function RenderPage({
   className,
@@ -99,13 +100,15 @@ export async function RenderPage({
           <h3 className="text-xl font-bold ">@{page.pageName}</h3>
         </div>
         <p className="text-xl opacity-80">{page.description && page.description}</p>{' '}
-        <div className=" py-4">
-          <HeaderLinks page={page} isOwner={isOwner} />
-        </div>
         {isOwner ? (
-          <AdminComponents componentItems={page['content']} page={page} />
+          <>
+            <EditPage page={page} />
+          </>
         ) : (
           <>
+            <div className="p-4">
+              <HeaderLinks page={page} isOwner={isOwner} />
+            </div>
             {page.content?.map((content, index) => {
               return (
                 <div

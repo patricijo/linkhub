@@ -3,14 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { createPage, updatePage } from './actions/pages'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Textarea } from '../ui/textarea'
+import { createPage, updatePage } from '../actions/pages'
+import { Input } from '../../ui/input'
+import { Button } from '../../ui/button'
+import { Textarea } from '../../ui/textarea'
 import { Page } from '@/payload-types'
 import { Globe, Trash } from 'lucide-react'
 import { useEffect } from 'react'
-import { checkUrl, createUrl } from './urlCheck'
+import { checkUrl, createUrl } from '../urlCheck'
 import {
   Dialog,
   DialogClose,
@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Label } from '../ui/label'
+import { Label } from '../../ui/label'
 
 const schema = z.object({
   url: z.string(),
@@ -36,10 +36,9 @@ export function HeaderLinkForm({
   page,
   index,
   className,
+  onClose,
   ...props
-}: React.ComponentProps<'div'> & { page: Page; index?: number }) {
-  const router = useRouter()
-
+}: React.ComponentProps<'div'> & { page: Page; index?: number; onClose: () => void }) {
   const {
     register,
     handleSubmit,
@@ -65,6 +64,7 @@ export function HeaderLinkForm({
       const result = await updatePage({ id: page.id, socials: socials })
       console.log(result)
       if (result.success) {
+        onClose()
         reset()
       } else {
         setError('url', { message: result.error })
@@ -83,6 +83,7 @@ export function HeaderLinkForm({
       const result = await updatePage({ id: page.id, socials: socials })
 
       if (result.success) {
+        onClose()
       } else {
         setError('url', { message: result.error })
       }
