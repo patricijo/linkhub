@@ -73,16 +73,7 @@ export default function EditHeadLinks({ page, headerItems, setHeaderItems }: Pro
               Show your links here
             </div>
           ) : (
-            <Reorder.Group
-              axis="x"
-              onReorder={setHeaderItems}
-              values={headerItems}
-              className="flex gap-4 relative"
-            >
-              {headerItems.map((item) => (
-                <Item item={item} key={item.id} page={page} />
-              ))}
-            </Reorder.Group>
+            headerItems.map((item) => <Item item={item} key={item.id} page={page} />)
           )}
           <button
             onClick={() => setIsOpen(true)}
@@ -111,10 +102,9 @@ const Item = ({ item, page }: { item: SortableSocials; page: Page }) => {
     setIsOpen(false)
   }
   const Icon = checkUrl(item.url).icon
-  const dragControls = useDragControls()
 
   return (
-    <Reorder.Item value={item} className=" relative ">
+    <div className=" relative ">
       <div className="flex ">
         <div className="group bg-white rounded-full text-gray-700 shadow-lg border border-gray-100 hover:-translate-y-3 hover:shadow-xl  transition-all duration-200 relative">
           <div className="p-4">
@@ -141,15 +131,11 @@ const Item = ({ item, page }: { item: SortableSocials; page: Page }) => {
           />
         </DialogContent>
       </Dialog>
-    </Reorder.Item>
+    </div>
   )
 }
 
-const SortableItem = ({ item, page }: { item: SortableSocials; page: Page }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const handleClose = () => {
-    setIsOpen(false)
-  }
+const SortableItem = ({ item }: { item: SortableSocials; page: Page }) => {
   const Icon = checkUrl(item.url).icon
   const y = useMotionValue(0)
   const boxShadow = useRaisedShadow(y)
