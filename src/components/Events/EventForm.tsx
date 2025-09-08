@@ -228,6 +228,7 @@ export function EventForm({
             <div className="space-y-2">
               <Label>Event Address</Label>
               <div>
+                {/* @ts-ignore */}
                 <AddressAutofill
                   accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''}
                   onRetrieve={handleAutofillRetrieve}
@@ -289,6 +290,7 @@ export function EventForm({
             >
               {minimapFeature ? (
                 <Suspense fallback={<div>Loading...</div>}>
+                  {/* @ts-ignore */}
                   <AddressMinimap
                     feature={minimapFeature}
                     show={true}
