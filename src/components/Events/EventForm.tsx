@@ -11,7 +11,7 @@ import { Page } from '@/payload-types'
 import { Label } from '../ui/label'
 import { AddressAutofill, AddressMinimap } from '@mapbox/search-js-react'
 import { createPage, deletePage, updatePage } from '../Pages/actions/pages'
-import { Suspense, useState, useRef, useEffect } from 'react'
+import { Suspense, useState } from 'react'
 import clsx from 'clsx'
 import { Checkbox } from '../ui/checkbox'
 import { Calendar } from '../ui/calendar'
@@ -53,8 +53,7 @@ export function EventForm({
   const [minimapFeature, setMinimapFeature] = useState(null)
   const [isLocal, setIsLocal] = useState(false)
   const [isOnline, setIsOnline] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(2025, 5, 9),
     to: new Date(2025, 5, 26),
@@ -69,26 +68,6 @@ export function EventForm({
     resolver: zodResolver(schema),
     mode: 'onChange',
   })
-
-  useEffect(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-    setSelectedImage(null)
-  }, [isLocal, isOnline])
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    } else {
-      setSelectedImage(null)
-    }
-  }
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
