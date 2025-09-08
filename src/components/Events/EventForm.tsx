@@ -135,9 +135,11 @@ export function EventForm({
             <div className="text-red-500 text-xs  ml-2">{errors.description.message}</div>
           )}
         </div>
-        <Label>Event Date</Label>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div>
+          <Label>Event Date</Label>
+        </div>
+        <div className="flex gap-4  items-center place-self-center">
+          <div className="">
             <Calendar
               mode="range"
               defaultMonth={dateRange?.from}
@@ -175,22 +177,7 @@ export function EventForm({
             </div>
           </div>
         </div>
-        <div className="space-y-2">
-          <Label>Banner Image</Label>
-          <Input
-            id="picture"
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
-        </div>
 
-        <div className="w-full aspect-[3/1] overflow-hidden rounded-sm bg-slate-100">
-          {selectedImage && (
-            <img src={selectedImage} alt="Selected Event Image" className="min-w-full min-h-full" />
-          )}
-        </div>
         <div>
           <Label>Event Type</Label>
         </div>
@@ -199,7 +186,7 @@ export function EventForm({
           <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
             <Checkbox
               id="onlineEvent"
-              onCheckedChange={(checked) => setIsOnline(!!checked)}
+              onCheckedChange={(checked: boolean) => setIsOnline(!!checked)}
               className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
             />
             <div className="grid gap-1.5 font-normal">
@@ -212,7 +199,7 @@ export function EventForm({
           <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
             <Checkbox
               id="localEvent"
-              onCheckedChange={(checked) => setIsLocal(!!checked)}
+              onCheckedChange={(checked: boolean) => setIsLocal(!!checked)}
               className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
             />
             <div className="grid gap-1.5 font-normal">
