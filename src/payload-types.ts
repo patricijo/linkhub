@@ -72,6 +72,7 @@ export interface Config {
     pages: Page;
     pageLinks: PageLink;
     pageYoutubeVideos: PageYoutubeVideo;
+    events: Event;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +84,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     pageLinks: PageLinksSelect<false> | PageLinksSelect<true>;
     pageYoutubeVideos: PageYoutubeVideosSelect<false> | PageYoutubeVideosSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -134,6 +136,13 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -226,6 +235,25 @@ export interface PageYoutubeVideo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  eventName: string;
+  owner: string | User;
+  description?: string | null;
+  startDate?: string | null;
+  startDate_tz?: SupportedTimezones;
+  endDate?: string | null;
+  endDate_tz?: SupportedTimezones;
+  onlineEvent?: boolean | null;
+  localEvent?: boolean | null;
+  deleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -250,6 +278,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageYoutubeVideos';
         value: string | PageYoutubeVideo;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -307,6 +339,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -382,6 +421,24 @@ export interface PageLinksSelect<T extends boolean = true> {
 export interface PageYoutubeVideosSelect<T extends boolean = true> {
   url?: T;
   owner?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  eventName?: T;
+  owner?: T;
+  description?: T;
+  startDate?: T;
+  startDate_tz?: T;
+  endDate?: T;
+  endDate_tz?: T;
+  onlineEvent?: T;
+  localEvent?: T;
+  deleted?: T;
   updatedAt?: T;
   createdAt?: T;
 }
