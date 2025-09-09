@@ -11,35 +11,45 @@ import { Page } from '@/payload-types'
 import { Label } from '../ui/label'
 import { AddressAutofill, AddressMinimap } from '@mapbox/search-js-react'
 import { createPage, deletePage, updatePage } from '../Pages/actions/pages'
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Checkbox } from '../ui/checkbox'
 import { Calendar } from '../ui/calendar'
 import { DateRange } from 'react-day-picker'
 import { Clock2Icon } from 'lucide-react'
 
-const schema = z.object({
-  pageName: z
-    .string()
-    .min(3, 'Identifier must be at least 3 characters')
-    .max(30, 'Identifier cannot exceed 30 characters')
-    .regex(
-      /^[a-zA-Z0-9_-]+$/,
-      'Identifier can only contain letters, numbers, underscores, and hyphens',
-    ),
-  name: z
-    .string()
-    .min(3, 'Name must be at least 3 characters')
-    .max(30, 'Name cannot exceed 30 characters')
-    .optional()
-    .or(z.literal('')),
-  description: z
-    .string()
-    .min(3, 'Description must be at least 3 characters')
-    .max(255, 'description cannot exceed 255 characters')
-    .optional()
-    .or(z.literal('')),
-})
+const schema = z
+  .object({
+    eventName: z
+      .string()
+      .min(3, 'Name must be at least 3 characters')
+      .max(30, 'Name cannot exceed 30 characters')
+      .optional()
+      .or(z.literal('')),
+    description: z
+      .string()
+      .min(3, 'Description must be at least 3 characters')
+      .max(255, 'description cannot exceed 255 characters')
+      .optional()
+      .or(z.literal('')),
+    localEvent: z.boolean().optional(),
+    onlineEvent: z.boolean().optional(),
+    address: z.string().optional(),
+    addressLine2: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postalCode: z.string().optional(),
+    country: z.string().optional(),
+    eventDate: z.any().optional(),
+    startDate: z.date().optional(),
+    endDate: z.date().optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+  })
+  .refine((data) => data.localEvent || data.onlineEvent, {
+    message: 'Mindestens eine der Optionen (Online oder Lokal) muss ausgewählt sein',
+    path: ['localEvent'],
+  })
 
 type FormFields = z.infer<typeof schema>
 
@@ -59,29 +69,63 @@ export function EventForm({
     to: new Date(2025, 5, 26),
   })
 
+  // Aktualisiere die versteckten Felder, wenn sich der Datumsbereich ändert
+
   const {
     register,
     handleSubmit,
     setError,
+    setValue,
+    trigger,
+    watch,
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     mode: 'onChange',
   })
 
+  // Function to combine date and time
+  const combineDateAndTime = (date: Date | undefined, timeString: string | undefined) => {
+    if (!date || !timeString) return date;
+    
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const dateTime = new Date(date);
+    dateTime.setHours(hours, minutes, seconds || 0);
+    return dateTime;
+  };
+
+  // Watch for time input changes
+  const watchStartTime = watch('startTime');
+  const watchEndTime = watch('endTime');
+
+  // Update dates when dateRange or time changes
+  useEffect(() => {
+    if (dateRange?.from) {
+      const startTimeValue = watchStartTime || '10:30:00';
+      setValue('startDate', combineDateAndTime(dateRange.from, startTimeValue));
+    }
+    
+    if (dateRange?.to) {
+      const endTimeValue = watchEndTime || '12:30:00';
+      setValue('endDate', combineDateAndTime(dateRange.to, endTimeValue));
+    }
+  }, [dateRange, watchStartTime, watchEndTime, setValue]);
+
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
+    console.log('data', data)
+    /*   try {
       const result = page ? await updatePage({ ...page, ...data }) : await createPage(data)
 
       if (result.success) {
-        router.push(`/dashboard/page/@${data.pageName}`)
+        router.push(`/dashboard/page/@${data.eventName}`)
       } else {
-        setError('pageName', { message: result.error })
+        setError('eventName', { message: result.error })
       }
     } catch (error) {
       console.error('Login error', error)
-    }
+    } */
   }
+
   const handleAutofillRetrieve = (response: { features: Array<any> }) => {
     setMinimapFeature(response.features[0])
     console.log(response)
@@ -93,13 +137,15 @@ export function EventForm({
         <div className="space-y-2">
           <Label>Eventname</Label>
           <Input
-            {...register('name')}
-            id="name"
+            {...register('eventName')}
+            id="eventName"
             className=" w-full"
-            placeholder="name"
+            placeholder="Whats the name of your event?"
             defaultValue={page?.name || ''}
           />
-          {errors.name && <div className="text-red-500 text-xs  ml-2">{errors.name.message}</div>}
+          {errors.eventName && (
+            <div className="text-red-500 text-xs  ml-2">{errors.eventName.message}</div>
+          )}
         </div>
         <div className="space-y-2">
           <Label>Description</Label>
@@ -126,6 +172,10 @@ export function EventForm({
               onSelect={setDateRange}
               className="rounded-lg border shadow-sm"
             />
+
+            {/* Versteckte Felder für Startdatum und Enddatum */}
+            <input type="hidden" {...register('startDate')} />
+            <input type="hidden" {...register('endDate')} />
           </div>
           <div className="space-y-2">
             <div className="flex w-full flex-col gap-3">
@@ -133,6 +183,7 @@ export function EventForm({
               <div className="relative flex w-full items-center gap-2">
                 <Clock2Icon className="text-muted-foreground pointer-events-none absolute left-2.5 size-4 select-none" />
                 <Input
+                  {...register('startTime')}
                   id="time-from"
                   type="time"
                   step="1"
@@ -146,6 +197,7 @@ export function EventForm({
               <div className="relative flex w-full items-center gap-2">
                 <Clock2Icon className="text-muted-foreground pointer-events-none absolute left-2.5 size-4 select-none" />
                 <Input
+                  {...register('endTime')}
                   id="time-to"
                   type="time"
                   step="1"
@@ -164,8 +216,13 @@ export function EventForm({
         <div className="grid grid-cols-2 gap-4">
           <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
             <Checkbox
+              {...register('onlineEvent')}
               id="onlineEvent"
-              onCheckedChange={(checked: boolean) => setIsOnline(!!checked)}
+              onCheckedChange={(checked: boolean) => {
+                setIsOnline(!!checked)
+                setValue('onlineEvent', !!checked)
+                trigger('localEvent')
+              }}
               className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
             />
             <div className="grid gap-1.5 font-normal">
@@ -177,8 +234,13 @@ export function EventForm({
           </Label>
           <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
             <Checkbox
+              {...register('localEvent')}
               id="localEvent"
-              onCheckedChange={(checked: boolean) => setIsLocal(!!checked)}
+              onCheckedChange={(checked: boolean) => {
+                setIsLocal(!!checked)
+                setValue('localEvent', !!checked)
+                trigger('localEvent')
+              }}
               className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
             />
             <div className="grid gap-1.5 font-normal">
@@ -189,6 +251,9 @@ export function EventForm({
             </div>
           </Label>
         </div>
+        {errors.localEvent && (
+          <div className="text-red-500 text-xs ml-2">{errors.localEvent.message}</div>
+        )}
         {isLocal && (
           <>
             <div className="space-y-2">
@@ -200,7 +265,12 @@ export function EventForm({
                   onRetrieve={handleAutofillRetrieve}
                   confirmOnBrowserAutofill
                 >
-                  <Input type="text" name="address" autoComplete="street-address" />
+                  <Input
+                    {...register('address')}
+                    type="text"
+                    name="address"
+                    autoComplete="street-address"
+                  />
                 </AddressAutofill>
               </div>
             </div>
@@ -208,13 +278,18 @@ export function EventForm({
               <Label className="txt-s txt-bold color-gray mb3">
                 Apartment, suite, etc. (optional)
               </Label>
-              <Input autoComplete="address-line2" name="address-line2" />
+              <Input
+                {...register('addressLine2')}
+                autoComplete="address-line2"
+                name="address-line2"
+              />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label className="txt-s txt-bold color-gray mb3">
                   City
                   <Input
+                    {...register('city')}
                     className="input mb12"
                     autoComplete="address-level2"
                     name="address-level2"
@@ -227,6 +302,7 @@ export function EventForm({
                 <Label className="txt-s txt-bold color-gray mb3">
                   State / Region
                   <Input
+                    {...register('state')}
                     className="input mb12"
                     autoComplete="address-level1"
                     name="address-level1"
@@ -239,7 +315,8 @@ export function EventForm({
                 <Label className="txt-s txt-bold color-gray mb3">
                   ZIP / Postcode
                   <Input
-                    className="input"
+                    {...register('postalCode')}
+                    className="input mb12"
                     autoComplete="postal-code"
                     name="postal-code"
                     required
@@ -247,6 +324,18 @@ export function EventForm({
                   />
                 </Label>
               </div>
+            </div>
+            <div>
+              <Label className="txt-s txt-bold color-gray mb3">
+                Country
+                <Input
+                  {...register('country')}
+                  className="input mb12"
+                  autoComplete="country"
+                  name="country"
+                  required
+                />
+              </Label>
             </div>
             <div
               id="minimap-container"
@@ -280,8 +369,8 @@ export function EventForm({
           </div>
         )}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting || !isValid}>
-          {page ? 'Update Page' : 'Create Page'}
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {page ? 'Update Event' : 'Create Event'}
         </Button>
       </form>
       {page && (
