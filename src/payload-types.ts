@@ -246,8 +246,7 @@ export interface Event {
   startDate_tz?: SupportedTimezones;
   endDate?: string | null;
   endDate_tz?: SupportedTimezones;
-  onlineEvent?: boolean | null;
-  localEvent?: boolean | null;
+  eventType?: ('localEvent' | 'onlineEvent')[] | null;
   deleted?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -436,8 +435,7 @@ export interface EventsSelect<T extends boolean = true> {
   startDate_tz?: T;
   endDate?: T;
   endDate_tz?: T;
-  onlineEvent?: T;
-  localEvent?: T;
+  eventType?: T;
   deleted?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -40,14 +40,19 @@ export const EventsCollection: CollectionConfig = {
       timezone: true,
     },
     {
-      name: 'onlineEvent',
-      type: 'checkbox',
-      defaultValue: false,
-    },
-    {
-      name: 'localEvent',
-      type: 'checkbox',
-      defaultValue: false,
+      name: 'eventType',
+      type: 'select',
+      hasMany: true,
+      options: [
+        {
+          label: 'Local Event',
+          value: 'localEvent',
+        },
+        {
+          label: 'Online Event',
+          value: 'onlineEvent',
+        },
+      ],
     },
 
     {

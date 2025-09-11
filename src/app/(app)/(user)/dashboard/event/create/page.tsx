@@ -1,5 +1,4 @@
 import { EventForm } from '@/components/Events/EventForm'
-
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Suspense } from 'react'
 
