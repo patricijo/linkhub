@@ -247,7 +247,20 @@ export interface Event {
   endDate?: string | null;
   endDate_tz?: SupportedTimezones;
   eventType?: ('localEvent' | 'onlineEvent')[] | null;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  coordinates?: [number, number] | null;
+  long?: number | null;
+  lat?: number | null;
   deleted?: boolean | null;
+  address?: string | null;
+  addressName?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zipCode?: string | null;
+  country?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -436,7 +449,16 @@ export interface EventsSelect<T extends boolean = true> {
   endDate?: T;
   endDate_tz?: T;
   eventType?: T;
+  coordinates?: T;
+  long?: T;
+  lat?: T;
   deleted?: T;
+  address?: T;
+  addressName?: T;
+  city?: T;
+  state?: T;
+  zipCode?: T;
+  country?: T;
   updatedAt?: T;
   createdAt?: T;
 }

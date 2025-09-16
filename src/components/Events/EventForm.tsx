@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
-import { Page } from '@/payload-types'
+import { Event, Page } from '@/payload-types'
 import { Label } from '../ui/label'
 import { createPage, deletePage, updatePage } from '../Pages/actions/pages'
 import { useState, useEffect, useRef } from 'react'
@@ -16,64 +16,110 @@ import { Calendar } from '../ui/calendar'
 import { DateRange } from 'react-day-picker'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { AddressForm } from './AdressForm'
+import { createEvent, updateEvent } from './actions/events'
+import { useRouter } from 'next/navigation'
 
-const schema = z.object({
-  eventName: z
-    .string()
-    .min(3, 'Name must be at least 3 characters')
-    .max(30, 'Name cannot exceed 30 characters'),
-  description: z
-    .string()
-    .min(3, 'Description must be at least 3 characters')
-    .max(255, 'description cannot exceed 255 characters')
-    .optional()
-    .or(z.literal('')),
-  eventType: z
-    .array(z.enum(['localEvent', 'onlineEvent']))
-    .min(1, 'Select at least one event type')
-    .default([]),
-  address: z.string().optional().or(z.literal('')),
-  city: z.string().optional().or(z.literal('')),
-  state: z.string().optional().or(z.literal('')),
-  zipCode: z.string().optional().or(z.literal('')),
-  country: z.string().optional().or(z.literal('')),
-  lat: z.number().optional(),
-  long: z.number().optional(),
+const schema = z
+  .object({
+    eventName: z
+      .string()
+      .min(3, 'Name must be at least 3 characters')
+      .max(30, 'Name cannot exceed 30 characters'),
+    description: z
+      .string()
+      .min(3, 'Description must be at least 3 characters')
+      .max(255, 'description cannot exceed 255 characters')
+      .optional()
+      .or(z.literal('')),
+    eventType: z
+      .array(z.enum(['localEvent', 'onlineEvent']))
+      .min(1, 'Select at least one event type')
+      .default([]),
+    addressName: z.string().optional().or(z.literal('')),
+    address: z.string().optional().or(z.literal('')),
+    addressBox: z.string().optional().or(z.literal('')),
+    city: z.string().optional().or(z.literal('')),
+    state: z.string().optional().or(z.literal('')),
+    zipCode: z.string().optional().or(z.literal('')),
+    country: z.string().optional().or(z.literal('')),
 
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  startTime: z.string().optional(),
-  endTime: z.string().optional(),
-})
+    coordinates: z.union([z.tuple([z.number(), z.number()]), z.null(), z.undefined()]),
+
+    startDate: z.date({
+      required_error: 'Start date is required',
+    }),
+    endDate: z.date({
+      required_error: 'End date is required',
+    }),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.eventType.includes('localEvent')) {
+        return !!data.coordinates
+      }
+      return true
+    },
+    {
+      message: 'Provide a location for the event',
+      path: ['addressBox'], // path of error
+    },
+  )
+// .refine((data) => data.eventType.includes('localEvent') && !(!data.long || !data.lat), {
+//   message: 'Provide a location for the event',
+//   path: ['addressBox'], // path of error
+// })
 
 export type EventFormFields = z.infer<typeof schema>
 
 export function EventForm({
-  page,
+  event,
   className,
   ...props
-}: React.ComponentProps<'div'> & { page?: Page }) {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>()
+}: React.ComponentProps<'div'> & { event?: Event }) {
+  const router = useRouter()
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: event?.startDate ? new Date(event.startDate) : undefined,
+    to: event?.endDate ? new Date(event.endDate) : undefined,
+  })
 
   const form = useForm<EventFormFields>({
     resolver: zodResolver(schema),
     mode: 'all',
     defaultValues: {
-      startTime: '09:00',
-      endTime: '17:00',
-      eventType: [],
-      address: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      country: '',
-      lat: 0,
-      long: 0,
+      eventName: event?.eventName || '',
+      description: event?.description || '',
+      startTime: event?.startDate
+        ? new Date(event.startDate).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+        : '00:00',
+      endTime: event?.endDate
+        ? new Date(event.endDate).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+        : '00:00',
+      eventType: event?.eventType || [],
+      addressName: event?.addressName || '',
+      addressBox: event?.addressName || '',
+      address: event?.address || '',
+      city: event?.city || '',
+      state: event?.state || '',
+      zipCode: event?.zipCode || '',
+      country: event?.country || '',
+
+      coordinates: event?.coordinates || [],
     },
   })
 
   // Function to combine date and time
-  const combineDateAndTime = (date: Date | undefined, timeString: string | undefined) => {
+  const combineDateAndTime = (date: Date, timeString: string) => {
     if (!date || !timeString) return date
 
     const [hours, minutes] = timeString.split(':').map(Number)
@@ -100,18 +146,28 @@ export function EventForm({
   }, [dateRange, watchStartTime, watchEndTime, form])
 
   const onSubmit: SubmitHandler<EventFormFields> = async (data) => {
-    console.log('data', data)
-    /*   try {
-      const result = page ? await updatePage({ ...page, ...data }) : await createPage(data)
+    try {
+      const result = event
+        ? await updateEvent({
+            ...event,
+            ...data,
+            startDate: data.startDate.toISOString(),
+            endDate: data.endDate.toISOString(),
+          })
+        : await createEvent({
+            ...data,
+            startDate: data.startDate.toISOString(),
+            endDate: data.endDate.toISOString(),
+          })
 
       if (result.success) {
-        router.push(`/dashboard/page/@${data.eventName}`)
+        router.push(`/event/${result.event?.id}`)
       } else {
-        setError('eventName', { message: result.error })
+        form.setError('eventName', { message: result.error })
       }
     } catch (error) {
       console.error('Login error', error)
-    } */
+    }
   }
 
   return (
@@ -155,35 +211,41 @@ export function EventForm({
             )}
           />
 
-          <FormItem>
-            <FormLabel>Event Date</FormLabel>
+          <FormField
+            control={form.control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Event Date</FormLabel>
 
-            <div className="flex gap-4 items-center place-self-center">
-              <FormControl>
-                <Calendar
-                  mode="range"
-                  selected={dateRange}
-                  onSelect={(range) => {
-                    setDateRange(range)
-                  }}
-                  className="rounded-lg border shadow-sm"
-                />
-              </FormControl>
-              {/* Start Time Picker */}
-              <div>
-                <FormLabel className="mt-4">Start Time</FormLabel>
-                <FormControl>
-                  <Input type="time" step="60" {...form.register('startTime')} />
-                </FormControl>
-                {/* End Time Picker */}
-                <FormLabel className="mt-4">End Time</FormLabel>
-                <FormControl>
-                  <Input type="time" step="60" {...form.register('endTime')} />
-                </FormControl>
-              </div>
-            </div>
-            <FormMessage />
-          </FormItem>
+                <div className="flex gap-4 items-center place-self-center">
+                  <FormControl>
+                    <Calendar
+                      mode="range"
+                      selected={dateRange}
+                      onSelect={(range) => {
+                        setDateRange(range)
+                      }}
+                      className="rounded-lg border shadow-sm"
+                    />
+                  </FormControl>
+                  {/* Start Time Picker */}
+                  <div>
+                    <FormLabel className="mt-4">Start Time</FormLabel>
+                    <FormControl>
+                      <Input type="time" step="60" {...form.register('startTime')} />
+                    </FormControl>
+                    {/* End Time Picker */}
+                    <FormLabel className="mt-4">End Time</FormLabel>
+                    <FormControl>
+                      <Input type="time" step="60" {...form.register('endTime')} />
+                    </FormControl>
+                  </div>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -256,7 +318,7 @@ export function EventForm({
           {watchLocalEventType && <AddressForm form={form} />}
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {page ? 'Update Event' : 'Create Event'}
+            {event ? 'Update Event' : 'Create Event'}
           </Button>
         </form>
       </Form>

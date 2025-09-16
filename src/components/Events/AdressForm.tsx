@@ -30,20 +30,20 @@ export function AddressForm({
     const handleDragEnd = (event: any) => {
       if (markerRef.current) {
         const lngLat = markerRef.current.getLngLat()
-        form.setValue('lat', lngLat.lat)
-        form.setValue('long', lngLat.lng)
+        form.setValue('coordinates', [lngLat.lng, lngLat.lat])
       }
     }
+
     mapboxgl.accessToken = accessToken
 
     mapInstanceRef.current = new mapboxgl.Map({
       container: mapContainerRef.current!,
-      center: [-74.5, 40],
+      center: (form.watch('coordinates')?.[0] && form.watch('coordinates')) || [0, 0],
       zoom: 9,
     })
 
     markerRef.current = new mapboxgl.Marker({ draggable: true })
-      .setLngLat([-74.5, 40])
+      .setLngLat((form.watch('coordinates')?.[0] && form.watch('coordinates')) || [0, 0])
       .addTo(mapInstanceRef.current)
 
     markerRef.current.on('dragend', handleDragEnd)
@@ -63,34 +63,58 @@ export function AddressForm({
       }
     }
 
+    form.setValue('addressName', d.features[0].properties.name || '')
     form.setValue('address', d.features[0].properties.address || '')
     form.setValue('city', d.features[0].properties.context?.place?.name || '')
     form.setValue('state', d.features[0].properties.context?.region?.name || '')
     form.setValue('zipCode', d.features[0].properties.context?.postcode?.name || '')
     form.setValue('country', d.features[0].properties.context?.country?.name || '')
-    form.setValue('lat', d.features[0].geometry.coordinates[1])
-    form.setValue('long', d.features[0].geometry.coordinates[0])
+    form.setValue('coordinates', d.features[0].geometry.coordinates || [0, 0])
   }
 
   return (
     <>
-      <div className="relative rounded-md overflow-hidden">
-        <div className="p-4 absolute z-[900] w-full right-0 left-0">
-          {/* @ts-expect-error */}
-          <SearchBox
-            accessToken={accessToken}
-            map={mapInstanceRef.current || undefined}
-            mapboxgl={mapboxgl}
-            value={inputValue}
-            onRetrieve={(d) => {
-              handleChange(d)
-            }}
-          />
-        </div>
+      <FormField
+        control={form.control}
+        name="addressBox"
+        render={() => (
+          <FormItem>
+            <FormLabel>Location</FormLabel>
+            <div className="relative rounded-md overflow-hidden">
+              <div className="p-4 absolute z-[900] w-full right-0 left-0">
+                <FormControl>
+                  {/* @ts-expect-error */}
+                  <SearchBox
+                    accessToken={accessToken}
+                    map={mapInstanceRef.current || undefined}
+                    mapboxgl={mapboxgl}
+                    value={inputValue}
+                    onRetrieve={(d) => {
+                      handleChange(d)
+                    }}
+                  />
+                </FormControl>
+              </div>
 
-        <div id="map-container" ref={mapContainerRef} className="h-[300px] z-10" />
-      </div>
-
+              <div id="map-container" ref={mapContainerRef} className="h-[300px] z-10" />
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="addressName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Name, apartment, suite, etc. (optional)</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="address"
@@ -104,7 +128,6 @@ export function AddressForm({
           </FormItem>
         )}
       />
-
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={form.control}

@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload'
+import { CollectionConfig, Validate } from 'payload'
 
 import { authenticated } from '@/access/authenticated'
 import { ownerAccess } from '@/access/owner'
@@ -32,11 +32,21 @@ export const EventsCollection: CollectionConfig = {
     {
       name: 'startDate',
       type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+      },
       timezone: true,
     },
     {
       name: 'endDate',
       type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+      },
       timezone: true,
     },
     {
@@ -54,11 +64,52 @@ export const EventsCollection: CollectionConfig = {
         },
       ],
     },
+    { name: 'coordinates', type: 'point' },
+    {
+      name: 'long',
+      type: 'number',
+      // validate: ((value, ctx) =>
+      //   String(
+      //     !ctx.siblingData.eventType?.includes('localEvent') || 'You must select a location.',
+      //   )) satisfies Validate,
+    },
+    {
+      name: 'lat',
+      type: 'number',
+      // validate: ((value, ctx) =>
+      //   String(
+      //     !ctx.siblingData.eventType?.includes('localEvent') || 'You must select a location.',
+      //   )) satisfies Validate,
+    },
 
     {
       name: 'deleted',
       type: 'checkbox',
       defaultValue: false,
+    },
+    {
+      name: 'address',
+      type: 'text',
+    },
+    {
+      name: 'addressName',
+      type: 'text',
+    },
+    {
+      name: 'city',
+      type: 'text',
+    },
+    {
+      name: 'state',
+      type: 'text',
+    },
+    {
+      name: 'zipCode',
+      type: 'text',
+    },
+    {
+      name: 'country',
+      type: 'text',
     },
   ],
 }
