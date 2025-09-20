@@ -85,3 +85,26 @@ export async function getEvent(eventId: string): Promise<Event | null> {
 
   return result.docs[0] || null
 }
+
+export async function getLocation(address: string) {
+  const locationIqKey = process.env.LocationIQ_API_KEY
+
+  const GEOCODING_API_URL = `https://eu1.locationiq.com/v1/search?q=${encodeURIComponent(address)}&format=json&key=${locationIqKey}`
+
+  try {
+    const response = await fetch(GEOCODING_API_URL)
+    const data = await response.json()
+    console.log(data)
+
+    if (data.length > 0) {
+      const location = data
+      return location
+    } else {
+      console.error('Geocoding API error:', data)
+      return null
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error)
+    return null
+  }
+}
