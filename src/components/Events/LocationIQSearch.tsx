@@ -59,9 +59,9 @@ export function LocationIQSearch({
   const { current: map } = useMap()
 
   useEffect(() => {
-    map?.zoomTo(-0.0102040816326531 * distance + 9.10204081632653)
-    console.log('a', Math.round(-0.0102040816326531 * distance + 9.10204081632653))
-    console.log('b', -0.0102040816326531 * distance + 9.10204081632653)
+    const a = 5 * Math.exp(-0.00693 * distance) + 3
+    map?.zoomTo(a)
+    console.log('a', a)
   }, [distance])
 
   useEffect(() => {
